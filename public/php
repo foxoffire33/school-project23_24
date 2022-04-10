@@ -1,0 +1,7 @@
+APP_NAME="RCoin Exchange"
+APP_KEY=
+
+DATABASE_SERVER="localhost"
+DATABASE_NAME="localhost"
+DATABASE_USERNAME="root"
+DATABASE_PASSWORD="asdasd"

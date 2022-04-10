@@ -1,0 +1,25 @@
+{
+  "name": "delaparra/frmaowrk",
+  "type": "project",
+  "description": "DeLaParra core framework.",
+  "keywords": [
+    "DeLaParra",
+    "Frameowrk"
+  ],
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "App\\": "app/",
+      "Framework\\": "src/Framework/"
+    }
+  },
+  "authors": [
+    {
+      "name": "reinier",
+      "email": "reinierdlp@gmail.com"
+    }
+  ],
+  "require": {
+    "vlucas/phpdotenv": "^5.4"
+  }
+}

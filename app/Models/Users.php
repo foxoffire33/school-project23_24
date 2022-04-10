@@ -1,0 +1,31 @@
+<?php
+
+namespace App\Models;
+
+use Framework\database\Entity;
+use Framework\Validator\Attributes\IntegerValidator;
+
+class Users extends Entity
+{
+
+    /**
+     * @var string
+     */
+    public string $email;
+
+    /**
+     * @var string
+     */
+    public string $name;
+
+    /**
+     * @var string
+     */
+    public string $password;
+
+    /**
+     * @var string
+     */
+    #[IntegerValidator]
+    public int $role = 0;
+}

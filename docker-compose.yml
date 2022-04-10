@@ -1,0 +1,55 @@
+version: '3.7'
+services:
+  webserver:
+    image: nginx:alpine
+    container_name: mvcweb
+    restart: unless-stopped
+    depends_on:
+      - MVCFramework
+      - database
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - mvc
+    volumes:
+      - ${PWD}/:/var/www/html
+      - ${PWD}/docker/nginx/conf.d/:/etc/nginx/conf.d/
+      - ${PWD}/docker/nginx/certs:/etc/ssl/
+  MVCFramework:
+    build:
+      context: ./docker
+      dockerfile: PHP8LaravelDockerFile
+    container_name: mvcapp
+    hostname: webapp
+    image: foxoffire33/mvc-framework
+    working_dir: '/var/www/html'
+    env_file:
+      - ./.env
+    depends_on:
+      - database
+    volumes:
+      - ${PWD}/:/var/www/html
+      #- ${PWD}/docker/php:/usr/local/etc/php/conf.d/
+    networks:
+      - mvc
+    healthcheck:
+      test: [ "CMD", "php", "-v" ]
+  database:
+    image: mysql/mysql-server
+    container_name: mariadbmvc
+    hostname: database
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+    networks:
+      - mvc
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping" ]
+networks:
+  mvc:
+    driver: bridge
