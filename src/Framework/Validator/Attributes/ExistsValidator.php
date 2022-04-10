@@ -2,6 +2,7 @@
 
 namespace Framework\Validator\Attributes;
 
+use Framework\database\exceptions\RecordNotFoundException;
 use Framework\Validator\BaseValidator;
 use Framework\Validator\Interfaces\ValidatetorInterface;
 
@@ -15,8 +16,14 @@ class ExistsValidator extends BaseValidator implements ValidatetorInterface
 
     function isValid(): bool
     {
-        $foreignEntity = ($this->foreignEntity)::findById($this->attribute);
-        return !empty($foreignEntity);
+        try {
+            $foreignEntity = ($this->foreignEntity)::findById($this->attribute);
+            return !empty($foreignEntity);
+        }catch (RecordNotFoundException $exception){
+            $this->messages[] = "Record not found";
+            return false;
+        }
+
     }
 
     function hasMessages(): bool

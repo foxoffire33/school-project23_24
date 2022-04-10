@@ -33,7 +33,6 @@ class TransactionController extends Controller
     #[RoleBasedAccessMiddleware(self::class,'save')]
     public function save(){
         $model = Transaction::create($_POST);
-
         $validated = $this->validator->validated($model);
 
         //todo uitzoeken wat hier mis gaat

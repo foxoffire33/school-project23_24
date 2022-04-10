@@ -4,6 +4,8 @@ namespace Framework\database;
 
 use Framework\Core\Application;
 use Framework\core\Config;
+use Framework\database\exceptions\RecordNotFound;
+use Framework\database\exceptions\RecordNotFoundException;
 use PDO;
 
 abstract class Entity
@@ -100,8 +102,19 @@ abstract class Entity
         $statement->bindParam('id', $id);
         $statement->setFetchMode(PDO::FETCH_CLASS, $class->getName());
 
-        if ($statement->execute())
-            return $statement->fetch();
+
+
+        if ($statement->execute() ){
+            $result = $statement->fetch();
+            if($result)
+                return $result;
+
+            throw new RecordNotFoundException;
+        }
+
+
+
+
     }
 
     public static function findAll()
