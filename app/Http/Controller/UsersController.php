@@ -2,6 +2,7 @@
 
 namespace App\Http\Controller;
 
+use App\Models\Users;
 use Framework\Middleware\Attributes\RoleBasedAccessMiddleware;
 use Framework\Router\Attributes\HttpDelete;
 use Framework\Router\Attributes\HttpGet;
@@ -13,11 +14,10 @@ class UsersController extends Controller
 {
 
 
-    #[HttpGet('/users/')]
+    #[HttpGet('/users')]
     #[RoleBasedAccessMiddleware(self::class,'index')]
-    public function index(HttpRequest $request){
-        var_dump($request);
-        return "Home";
+    public function index(){
+        return $this->view->resolve('User/Index',['entities' => Users::findAll()]);
     }
 
     #[HttpGet('/users/:id')]
@@ -40,19 +40,21 @@ class UsersController extends Controller
 
     #[HttpDelete('/users/:id')]
     #[RoleBasedAccessMiddleware(self::class,'delete')]
-    public function delete(){
-        return "delete wirh is page";
+    public function delete(int $id){
+        $entity = Users::findById($id);
+        if($entity->delete())
+             header('location: /users');
     }
 
-    #[HttpDelete('/users/:id/force-delete')]
-    #[RoleBasedAccessMiddleware(self::class,'force-delete')]
-    public function foreceDelete(){
-        return "about page";
-    }
-
-    #[HttpPath('/users/:id/restore')]
-    #[RoleBasedAccessMiddleware(self::class,'restore')]
-    public function restore(){
-        return "about page";
-    }
+//    #[HttpDelete('/users/:id/force-delete')]
+//    #[RoleBasedAccessMiddleware(self::class,'force-delete')]
+//    public function foreceDelete(){
+//        return "about page";
+//    }
+//
+//    #[HttpPath('/users/:id/restore')]
+//    #[RoleBasedAccessMiddleware(self::class,'restore')]
+//    public function restore(){
+//        return "about page";
+//    }
 }

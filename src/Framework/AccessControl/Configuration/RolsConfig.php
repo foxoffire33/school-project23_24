@@ -29,6 +29,7 @@ return [
             CoinController::class => ['index', 'show'],
             TransactionController::class => ['create', 'save', 'add', 'addPost'],
             WalledController::class => 'index',
+            UsersController::class
         ],
         'administrator' => [
             SiteController::class,

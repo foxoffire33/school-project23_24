@@ -28,7 +28,7 @@ class Application
 
     public function __construct(public Container $container)
     {
-        set_exception_handler("\Framework\core\ExceptionHandler::handler");
+       // set_exception_handler("\Framework\core\ExceptionHandler::handler");
 
         if (!isset($_SESSION))
             session_start();

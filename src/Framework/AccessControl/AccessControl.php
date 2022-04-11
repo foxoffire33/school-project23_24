@@ -58,7 +58,6 @@ class AccessControl
         if (is_null($this->session))
             throw new UserNotFoundException();
 
-        try {
             $userRolesJson = json_decode($this->session->user->roles);
             if ($userRolesJson) {
                 $result = false;
@@ -70,22 +69,20 @@ class AccessControl
                     if (!in_array($item, $roleValues))
                         throw new UserRoleNotFound();
 
-                    $controller = $this->config[self::ROLES_ACTIONS_KEY_NAME][$roleNames[$item]][$controller] ?? null;
+                    $fetchedController = $this->config[self::ROLES_ACTIONS_KEY_NAME][$roleNames[$item]][$controller] ?? null;
 
                     //Als het een array is dan moet er gekeken worden of de actie er in staat
 
-                    if ($controller && is_array($controller)) {
-                        $result = in_array($action, $controller);
+                    if ($fetchedController && is_array($fetchedController)) {
+                        $result = in_array($action, $fetchedController);
                         continue;
                     }
 
                     //Als de controller als key bestaat en het is geen array return true
-                    $result = ($controller && !is_array($this->config[self::ROLES_ACTIONS_KEY_NAME][$controller]));
+                    $result = is_string($controller);
                 }
             }
-        }catch (\TypeError $exception){
-            return false;
-        }
+
         return $result;
     }
 

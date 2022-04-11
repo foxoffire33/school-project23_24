@@ -24,9 +24,12 @@ class HttpRequest implements RequestInterface
      */
     public function __construct(string $method, $uri, array $headers = [], $body = null, string $version = '1.1')
     {
-        if (!($uri instanceof UriInterface)) {
+        if (!($uri instanceof UriInterface))
             $uri = new Uri($uri);
-        }
+
+        //Conteroleer of er een hidden field _method gepost is met de juste method
+        if(isset($_POST['_method']) && in_array(strtolower($_POST['_method']),['delete','put','patch']))
+            $method = strtoupper($_POST['_method']);
 
         $this->method = $method;
         $this->uri = $uri;

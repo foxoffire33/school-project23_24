@@ -67,11 +67,11 @@ class Router implements RouterInterface
         //is de cache leeg resolve dan alle routes en zet deze in de cache
         if (empty($this->memCache->getByKey(self::CACHED_ROUTE_KEY))) {
             $this->register($this->routerControllers);
-         //   $this->memCache->setKey(self::CACHED_ROUTE_KEY, self::$routes);
+            //   $this->memCache->setKey(self::CACHED_ROUTE_KEY, self::$routes);
         }
 
         //Haal alle routes op uit de cache
-      //  self::$routes = $this->memCache->getByKey(self::CACHED_ROUTE_KEY);
+        //  self::$routes = $this->memCache->getByKey(self::CACHED_ROUTE_KEY);
     }
 
 
@@ -137,5 +137,10 @@ class Router implements RouterInterface
                 }
             }
         }
+    }
+
+    public static function get(string $name): ?string
+    {
+        return self::$routes['GET'][$name];
     }
 }

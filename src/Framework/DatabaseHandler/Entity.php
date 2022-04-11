@@ -31,11 +31,11 @@ abstract class Entity
 
     public function delete(){
         $class = new \ReflectionClass($this);
+        $className = strtolower($class->getShortName());
 
-        $sqlQuery = "delete * from { $class->getShortName()} where id = :id";
+        $sqlQuery = "delete from {$className} where id = :id";
         $statement = $this->mysqlConnection->db->prepare($sqlQuery);
         $statement->bindParam("id",$this->id);
-
         return $statement->execute();
     }
 
