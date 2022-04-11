@@ -32,10 +32,9 @@ class AccessControl
     {
         try {
             $this->config = include $_SERVER['DOCUMENT_ROOT'] . '/..//src/Framework/AccessControl/Configuration/RolsConfig.php';
-        }catch (\TypeError $exception){
+        } catch (\TypeError $exception) {
             throw new ConfigurationNotFoundException();
         }
-
 
 
         //Controleer of er wel een sessie actief is
@@ -52,27 +51,43 @@ class AccessControl
      * @throws UserNotFoundException
      * @throws UserRoleNotFound
      */
-    public function can(string $controller, string $action): bool{
+    public function can(string $controller, string $action): bool
+    {
         $roleValues = array_values($this->config[self::USER_ROLES_KEY_NAME]);
         $roleNames = array_keys($this->config[self::USER_ROLES_KEY_NAME]);
         //Controleer of de gebruiker bestaat
-        if(is_null($this->session))
+        if (is_null($this->session))
             throw new UserNotFoundException();
 
-        //controleer of de key wel gedefinieerd is
-        if(!in_array($this->session->user->role, $roleValues))
-            throw new UserRoleNotFound();
+        try {
+            $userRolesJson = json_decode($this->session->user->roles);
+            if ($userRolesJson) {
+                $result = false;
+                foreach ($userRolesJson as $item) {
+                    if ($result)
+                        break;
 
-        //controleer of de controller als key bestaat
-        $controller = $this->config[self::ROLES_ACTIONS_KEY_NAME][$roleNames[$this->session->user->role]][$controller] ?? null;
-        //Als het een array is dan moet er gekeken worden of de actie er in staat
+                    //controleer of de key wel gedefinieerd is
+                    if (!in_array($item, $roleValues))
+                        throw new UserRoleNotFound();
 
-        if ($controller && is_array($controller))
-            return in_array($action,$controller);
+                    $controller = $this->config[self::ROLES_ACTIONS_KEY_NAME][$roleNames[$item]][$controller] ?? null;
 
+                    //Als het een array is dan moet er gekeken worden of de actie er in staat
 
-        //Als de controller als key bestaat en het is geen array return true
-        return ($controller && !is_array($this->config[self::ROLES_ACTIONS_KEY_NAME][$controller]));
+                    if ($controller && is_array($controller)) {
+                        $result = in_array($action, $controller);
+                        continue;
+                    }
+
+                    //Als de controller als key bestaat en het is geen array return true
+                    $result = ($controller && !is_array($this->config[self::ROLES_ACTIONS_KEY_NAME][$controller]));
+                }
+            }
+        }catch (\TypeError $exception){
+            return false;
+        }
+        return $result;
     }
 
 }

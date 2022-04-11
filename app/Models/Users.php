@@ -26,6 +26,5 @@ class Users extends Entity
     /**
      * @var string
      */
-    #[IntegerValidator]
-    public int $role = 0;
+    public string $roles = '[0]';
 }

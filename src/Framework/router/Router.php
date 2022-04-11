@@ -67,11 +67,11 @@ class Router implements RouterInterface
         //is de cache leeg resolve dan alle routes en zet deze in de cache
         if (empty($this->memCache->getByKey(self::CACHED_ROUTE_KEY))) {
             $this->register($this->routerControllers);
-            $this->memCache->setKey(self::CACHED_ROUTE_KEY, self::$routes);
+         //   $this->memCache->setKey(self::CACHED_ROUTE_KEY, self::$routes);
         }
 
         //Haal alle routes op uit de cache
-        self::$routes = $this->memCache->getByKey(self::CACHED_ROUTE_KEY);
+      //  self::$routes = $this->memCache->getByKey(self::CACHED_ROUTE_KEY);
     }
 
 
@@ -86,12 +86,12 @@ class Router implements RouterInterface
 
         $path = explode('?', $_SERVER['REQUEST_URI']);
         $route = self::$routes[$request->method->value][$path[0]] ?? null;
-        $routeMiddleware = self::$routes[$request->method->value][$path[0]] ?? null;
+        $routeMiddleware = self::$routesMiddleWare[$request->method->value][$path[0]] ?? null;
 
         if ($route !== null) {
             if (class_exists($route['class']) && method_exists($route['class'], $route['action'])) {
-                if (isset($routeMiddleware['middleware'])) {//handel loop all middelware
-                    $middelware = $routeMiddleware['middleware'];
+                if (isset($routeMiddleware)) {//handel loop all middelware
+                    $middelware = $routeMiddleware;
                     //$middelware = $this->container->get($middelware);
                     do {
                         $middelware = $middelware->handle();
@@ -131,10 +131,10 @@ class Router implements RouterInterface
                     throw new RouterActionDuplicatedException();
                 }
             } else if ($route instanceof Handler && !is_null($lastRoute)) {
-                if (!isset(self::$routesMiddleWare[$lastRoute->method->value][$lastRoute->path]['middleware'])) {
-                    self::$routesMiddleWare[$lastRoute->method->value][$lastRoute->path]['middleware'] = $route;
+                if (!isset(self::$routesMiddleWare[$lastRoute->method->value][$lastRoute->path])) {
+                    self::$routesMiddleWare[$lastRoute->method->value][$lastRoute->path] = $route;
                 } else {
-                    self::$routesMiddleWare[$lastRoute->method->value][$lastRoute->path]['middleware'] = self::$routesMiddleWare[$lastRoute->method->value][$lastRoute->path]['middleware']?->setNext($route);
+                    self::$routesMiddleWare[$lastRoute->method->value][$lastRoute->path] = self::$routesMiddleWare[$lastRoute->method->value][$lastRoute->path]?->setNext($route);
                 }
             }
         }
