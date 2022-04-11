@@ -28,14 +28,13 @@ class AccessControl
      * Bij het installeren van deze klaase moet je eerst de configuratie inladen
      * @param array $config
      */
-    public function __construct(private Session $session, private MysqlConnection $mysqlConnection)
+    public function __construct(private Session $session, private MysqlConnection $mysqlConnection, public AccessGates $gates)
     {
         try {
             $this->config = include $_SERVER['DOCUMENT_ROOT'] . '/..//src/Framework/AccessControl/Configuration/RolsConfig.php';
         } catch (\TypeError $exception) {
             throw new ConfigurationNotFoundException();
         }
-
 
         //Controleer of er wel een sessie actief is
         if (empty($this->session))
