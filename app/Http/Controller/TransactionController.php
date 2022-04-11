@@ -16,22 +16,22 @@ class TransactionController extends Controller
     #[HttpGet('/transactions')]
     #[AuthenticateMiddleware]
     #[RoleBasedAccessMiddleware(self::class,'index')]
-    public function index(): void
+    public function index(): ?string
     {
-        $this->view->resolve('Transaction/Index',['models' => Transaction::findAll()]);
+        return $this->view->resolve('Transaction/Index',['models' => Transaction::findAll()]);
     }
 
     #[HttpGet('/transactions/create')]
     #[AuthenticateMiddleware]
     #[RoleBasedAccessMiddleware(self::class,'create')]
-    public function create(){
-        $this->view->resolve('Transaction/BuyOrSale');
+    public function create(): ?string{
+        return $this->view->resolve('Transaction/BuyOrSale');
     }
 
     #[HttpPost('/transactions')]
     #[AuthenticateMiddleware]
     #[RoleBasedAccessMiddleware(self::class,'save')]
-    public function save(){
+    public function save(): ?string{
         $model = Transaction::create($_POST);
         $validated = $this->validator->validated($model);
 
@@ -40,21 +40,25 @@ class TransactionController extends Controller
         $rawQuery = $this->mysqlConnection->query('call TradeCoin(' .  implode(',',$validated) . ');');
         if($rawQuery)
             header("Location: /walled");
+
+        return null;
     }
 
     #[HttpGet('/transactions/add')]
     #[AuthenticateMiddleware]
     #[RoleBasedAccessMiddleware(self::class,'add')]
-    public function add(){
-        $this->view->resolve('Transaction/Add');
+    public function add(): ?string{
+       return $this->view->resolve('Transaction/Add');
     }
 
     #[HttpPost('/transactions/add')]
     #[AuthenticateMiddleware]
     #[RoleBasedAccessMiddleware(self::class,'addPost')]
-    public function addPost(){
+    public function addPost(): ?string {
         $model = Transaction::create(array_merge(['buy_coin' => 1],$_POST));
         if(!empty($this->validator->validated($model)) && $model->save())
             header("Location: /walled");
+
+        return null;
     }
 }

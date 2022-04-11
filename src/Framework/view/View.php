@@ -4,7 +4,7 @@ namespace Framework\view;
 
 //componsite parrtan
 
-use Framework\router\exceptions\ViewFileNotFoundException;
+use Framework\view\exceptions\ViewFileNotFoundException;
 use Framework\view\interfaces\RenderableInterface;
 use function Composer\Autoload\includeFile;
 
@@ -18,14 +18,18 @@ class View
         $this->base = realpath($_SERVER['DOCUMENT_ROOT']) . '/../app/Views/';
     }
 
-    public function resolve(string $path, array $data = []): string
+    public function resolve(string $path, array $data = []): ?string
     {
         $fullFilePath = $this->base . $path . '.render.php';
         if (file_exists($fullFilePath)) {
             $file = file_get_contents($fullFilePath);
-            return eval("?>$file");
-            }
-        return '';
+            ob_start();
+            extract($data);
+            eval("?>$file");
+            $outputBuffer = ob_get_clean();
+            return $outputBuffer;
+        }
+        throw new ViewFileNotFoundException();
     }
 
     public function render(string $path)

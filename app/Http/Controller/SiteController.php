@@ -17,7 +17,7 @@ class SiteController extends Controller
 
     #[HttpGet('/')]
     #[RoleBasedAccessMiddleware(self::class,'index')]
-    public function index()
+    public function index(): ?string
     {
 
         //var_dump($this->view->render('Site/Home'));
@@ -26,14 +26,14 @@ class SiteController extends Controller
 
     #[HttpGet('/about')]
     #[RoleBasedAccessMiddleware(self::class,'about')]
-    public function about()
+    public function about(): ?string
     {
         return "about page";
     }
 
     #[HttpGet('/contact')]
     #[RoleBasedAccessMiddleware(self::class,'contact')]
-    public function contact()
+    public function contact(): ?string
     {
         return $this->view->resolve('Site/Contact');
     }

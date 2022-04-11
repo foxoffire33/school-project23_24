@@ -12,14 +12,14 @@ class RegisterController extends Controller
 {
     #[HttpGet('/register')]
     #[RoleBasedAccessMiddleware(self::class,'register')]
-    public function index()
+    public function index(): ?string
     {
         return $this->view->resolve('Register/Index');
     }
 
     #[HttpPost('/register')]
     #[RoleBasedAccessMiddleware(self::class,'register')]
-    public function create(){
+    public function create(): ?string {
         $passwordHash = password_hash($_POST['password'],PASSWORD_DEFAULT);
         if((Users::create(array_merge($_POST,['password' => $passwordHash])))->save())
             header("Location: /register");

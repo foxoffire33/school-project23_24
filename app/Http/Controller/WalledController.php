@@ -12,8 +12,8 @@ class WalledController extends Controller
     #[HttpGet('/walled')]
     #[ThrottleMiddleware(120,60)]
     #[AuthenticateMiddleware]
-    public function index(): void
+    public function index(): ?string
     {
-        $this->view->resolve('Walled/Index',['models' =>  Walled::findAll()]);
+        return $this->view->resolve('Walled/Index',['models' =>  Walled::findAll()]);
     }
 }

@@ -21,18 +21,18 @@ class CoinController extends Controller
     #[ThrottleMiddleware(120, 60)]
     #[AuthenticateMiddleware]
     #[RoleBasedAccessMiddleware(self::class, 'index')]
-    public function index(): void
+    public function index(): ?string
     {
-        $this->view->resolve('Coin/Index', ['models' => Coin::findAll()]);
+        return $this->view->resolve('Coin/Index', ['models' => Coin::findAll()]);
     }
 
     #[HttpGet('/coins/show')]
     #[ThrottleMiddleware(120, 60)]
     #[AuthenticateMiddleware]
     #[RoleBasedAccessMiddleware(self::class, 'show')]
-    public function show(HttpRequest $httpRequest): void
+    public function show(HttpRequest $httpRequest): ?string
     {
         $entity = Coin::findById($httpRequest->attributes->id);
-        $this->view->resolve('Coin/Show', ['model' => $entity]);
+        return $this->view->resolve('Coin/Show', ['model' => $entity]);
     }
 }
