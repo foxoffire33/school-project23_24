@@ -25,12 +25,12 @@ class AuthenticateController extends Controller
         if($model = Users::findOne(['email' => $_POST['email']])){
             if(password_verify($_POST['password'],$model->password)){
                 $this->session->set(Session::SESSION_USER_ID_KEY, $model->id);
-                return header("Location: /transactions");
+                return header("Location: /walled");
             }
             $_SESSION['flash']['error'][] = "Invalied cerdentials";
             return header("Location: /login");
         }
-            return header("Location: /coins");
+            return header("Location: /login");
     }
 
     #[HttpGet('/logout')]

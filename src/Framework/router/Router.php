@@ -10,6 +10,8 @@ use App\Http\Controller\TransactionController;
 use App\Http\Controller\UsersController;
 use App\Http\Controller\WalledController;
 use App\Models\Transaction;
+use Framework\Cache\MemCache;
+use Framework\Cache\MemCacheService;
 use Framework\Container\Container;
 use Framework\Core\Application;
 use Framework\database\MysqlConnection;
@@ -28,7 +30,16 @@ class Router implements RouterInterface
 
     private AbstractHandler $middleware;
 
-    private array $routes = [
+    const CACHED_ROUTE_KEY = 'router_routes';
+    private static array $routes = [
+        'GET' => [],
+        'POST' => [],
+        'PUT' => [],
+        'PATCH' => [],
+        'DELETE' => []
+    ];
+
+    private static array $routesMiddleWare = [
         'GET' => [],
         'POST' => [],
         'PUT' => [],
@@ -46,9 +57,21 @@ class Router implements RouterInterface
         WalledController::class
     ];
 
-    public function __construct(private Container $container)
+    /**
+     * Er wordt gebruikt gemaakt van cache alle routes staan in de cache, als ze dat niet staat worden ze resolved
+     * @param Container $container
+     * @param MemCacheService $memCache
+     */
+    public function __construct(private Container $container, private MemCacheService $memCache)
     {
-        $this->register($this->routerControllers);
+        //is de cache leeg resolve dan alle routes en zet deze in de cache
+        if (empty($this->memCache->getByKey(self::CACHED_ROUTE_KEY))) {
+            $this->register($this->routerControllers);
+            $this->memCache->setKey(self::CACHED_ROUTE_KEY, self::$routes);
+        }
+
+        //Haal alle routes op uit de cache
+        self::$routes = $this->memCache->getByKey(self::CACHED_ROUTE_KEY);
     }
 
 
@@ -62,20 +85,21 @@ class Router implements RouterInterface
     {
 
         $path = explode('?', $_SERVER['REQUEST_URI']);
-        $attribute = $this->routes[$request->method->value][$path[0]] ?? null;
+        $route = self::$routes[$request->method->value][$path[0]] ?? null;
+        $routeMiddleware = self::$routes[$request->method->value][$path[0]] ?? null;
 
-        if ($attribute !== null) {
-            if (class_exists($attribute['action']?->class) && method_exists($attribute['action']?->class, $attribute['action']?->name)) {
-                if(isset($attribute['middleware'])){//handel loop all middelware
-                    $middelware = $attribute['middleware'];
+        if ($route !== null) {
+            if (class_exists($route['class']) && method_exists($route['class'], $route['action'])) {
+                if (isset($routeMiddleware['middleware'])) {//handel loop all middelware
+                    $middelware = $routeMiddleware['middleware'];
                     //$middelware = $this->container->get($middelware);
                     do {
                         $middelware = $middelware->handle();
-                    }while(!is_null($middelware) && $middelware->hasNext());
+                    } while (!is_null($middelware) && $middelware->hasNext());
                 }
                 //Use DI Container to resolve the class
-                $class = $this->container->get($attribute['action']?->class);
-                return call_user_func_array([$class, $attribute['action']?->name], [$request]);
+                $class = $this->container->get($route['class']);
+                return call_user_func_array([$class, $route['action']], [$request]);
             }
         } else {
             throw new RouterActionNotFound();
@@ -87,31 +111,30 @@ class Router implements RouterInterface
     {
         foreach ($controllers as $controller) {
             $reflection = new \ReflectionClass($controller);
-           $this->addAttributes($reflection->getAttributes());
+            //  $this->addAttributes($reflection->getAttributes());
             foreach ($reflection->getMethods() as $method) {
-                $this->addAttributes($method->getAttributes(),$method);
+                $this->addAttributes($method->getAttributes(), $method);
             }
         }
     }
 
-    private function addAttributes($attributes, $method = null){
+    private function addAttributes($attributes, $method = null)
+    {
 
         foreach ($attributes as $attribute) {
-           // $route = $this->container->get($attribute->getName());
-         //  // var_dump($route);exit;
             $route = $attribute->newInstance();
             if ($route instanceof HttpRoute) {
                 $lastRoute = $route;
-                if (!array_key_exists($lastRoute->method->value, $this->routes[$lastRoute->method->value])) {
-                    $this->routes[$lastRoute->method->value][$lastRoute->path]['action'] = $method;
+                if (!array_key_exists($lastRoute->method->value, self::$routes[$lastRoute->method->value])) {
+                    self::$routes[$lastRoute->method->value][$lastRoute->path] = ['class' => $method->class, 'action' => $method->name];
                 } else {
                     throw new RouterActionDuplicatedException();
                 }
             } else if ($route instanceof Handler && !is_null($lastRoute)) {
-                if (!isset($this->routes[$lastRoute->method->value][$lastRoute->path]['middleware'])){
-                    $this->routes[$lastRoute->method->value][$lastRoute->path]['middleware'] = $route;
-                }else {
-                    $this->routes[$lastRoute->method->value][$lastRoute->path]['middleware'] = $this->routes[$lastRoute->method->value][$lastRoute->path]['middleware']?->setNext($route);
+                if (!isset(self::$routesMiddleWare[$lastRoute->method->value][$lastRoute->path]['middleware'])) {
+                    self::$routesMiddleWare[$lastRoute->method->value][$lastRoute->path]['middleware'] = $route;
+                } else {
+                    self::$routesMiddleWare[$lastRoute->method->value][$lastRoute->path]['middleware'] = self::$routesMiddleWare[$lastRoute->method->value][$lastRoute->path]['middleware']?->setNext($route);
                 }
             }
         }

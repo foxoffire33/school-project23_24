@@ -50,6 +50,12 @@ services:
       - mvc
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping" ]
+  cache:
+    image: memcached
+    container_name: cache
+    hostname: cache
+    networks:
+      - mvc
 networks:
   mvc:
     driver: bridge

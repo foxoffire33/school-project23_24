@@ -2,7 +2,9 @@
 
 namespace Framework\Container;
 
+use Framework\Cache\MemCacheService;
 use Framework\Container\Interfaces\ContainerInterface;
+use Framework\Core\Application;
 use Framework\core\Attribute;
 use Framework\core\Config;
 use Framework\core\Singleton;
@@ -13,7 +15,19 @@ use MongoDB\BSON\Type;
 
 class Container implements ContainerInterface
 {
+    const MEMCACHE_KEY = 'container_cache';
     private static array $entries = [];
+
+    private MemCacheService $memCacheService;
+
+    public function __construct()
+    {
+        $this->memCacheService = MemCacheService::getInstance();
+        $this->memCacheService->FlushAll();
+        $cache = $this->memCacheService->getByKey(self::MEMCACHE_KEY);
+        if($cache)
+            self::$entries = $cache;
+    }
 
     /**
      * Deze functie wordt een gebroepen om een classes de resolven met alle depenencies injected
@@ -23,7 +37,7 @@ class Container implements ContainerInterface
     public function get(string $id)
     {
         if ($this->has($id)) {
-            $entry = $this->entries[$id];
+            $entry = self::$entries[$id];
 
             if (is_callable($entry)) {
                 return $entry($this);
@@ -37,7 +51,7 @@ class Container implements ContainerInterface
 
     public function has(string $id): bool
     {
-        return isset($this->entries[$id]);
+        return isset(self::$entries[$id]);
     }
 
     public function set(string $id, callable $concrete): void
@@ -58,30 +72,32 @@ class Container implements ContainerInterface
         $constructor = $reflectionClass->getConstructor();
         $parameters = array_merge($constructor?->getParameters() ?? []);
 
-
         //Controleer of het een defualt class is
         if ($reflectionClass->isInstantiable()) {
             if (!$constructor || !$parameters)
                 return new $id;
 
-            $dependencies = $this->loadDependencies($parameters, $id,$constructor);
+            $dependencies = $this->loadDependencies($parameters, $id, $constructor);
             return $reflectionClass->newInstanceArgs($dependencies);
         }
 
         //Conteroleer of is heet Singleton is
         if (!$reflectionClass->isInstantiable() && $reflectionClass->hasMethod('getInstance')) {
-            return $this->loadFactory($reflectionClass,$id);
+            return $this->loadFactory($reflectionClass, $id);
         }
+
+        $this->memcache->setKey(self::MEMCACHE_KEY, self::$entries);
     }
 
-    private function loadFactory(\ReflectionClass $reflectionClass, string $id){
+    private function loadFactory(\ReflectionClass $reflectionClass, string $id)
+    {
         $constructor = $reflectionClass->getConstructor();
         $parameters = $constructor?->getParameters() ?? [];
 
         if (empty($parameters))
             return $id::getInstance();
 
-        $dependencies = $this->loadDependencies($parameters, $id,$constructor);
+        $dependencies = $this->loadDependencies($parameters, $id, $constructor);
         return $id::getInstance($dependencies);
     }
 
@@ -89,18 +105,17 @@ class Container implements ContainerInterface
     {
         $counter = -1;
         return array_map(
-            function (\ReflectionParameter $parameter) use ($id,$counter, $constructor) {
+            function (\ReflectionParameter $parameter) use ($id, $counter, $constructor) {
                 $name = $parameter->getName();
 
 
                 $type = $parameter->getType();
                 $counter += 1;
                 if (!$type)
-                 //   throw new \Exception('Failed to resolve class "' . $id . '" because param "' . $name . '" is missing a type hint');
+                    //   throw new \Exception('Failed to resolve class "' . $id . '" because param "' . $name . '" is missing a type hint');
 
-                if ($type instanceof \ReflectionUnionType)
-                    throw new \Exception('Failed to resolve class "' . $id . '" because of union type for param "' . $name . '"');
-
+                    if ($type instanceof \ReflectionUnionType)
+                        throw new \Exception('Failed to resolve class "' . $id . '" because of union type for param "' . $name . '"');
 
 
                 if ($type instanceof \ReflectionNamedType && !$type->isBuiltin())
