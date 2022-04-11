@@ -29,6 +29,16 @@ abstract class Entity
         return $entity;
     }
 
+    public function delete(){
+        $class = new \ReflectionClass($this);
+
+        $sqlQuery = "delete * from { $class->getShortName()} where id = :id";
+        $statement = $this->mysqlConnection->db->prepare($sqlQuery);
+        $statement->bindParam("id",$this->id);
+
+        return $statement->execute();
+    }
+
     public function save()
     {
 
