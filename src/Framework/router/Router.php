@@ -82,8 +82,10 @@ class Router implements RouterInterface
         $httpUrl = $request->getUri();
 
         $path = explode('?', $httpUrl);
-        $route = self::$routes[$httpMethod][$path[0]] ?? null;
-        $routeMiddleware = self::$routesMiddleWare[$httpMethod][$path[0]] ?? null;
+
+        $replacedPath = preg_replace('/(\d+)/', ':id', $path[0]);
+        $route = self::$routes[$httpMethod][$replacedPath] ?? null;
+        $routeMiddleware = self::$routesMiddleWare[$httpMethod][$replacedPath] ?? null;
 
         if ($route !== null) {
             if (class_exists($route['class']) && method_exists($route['class'], $route['action'])) {
@@ -96,7 +98,7 @@ class Router implements RouterInterface
                 }
                 //Use DI Container to resolve the class
                 $class = $this->container->get($route['class']);
-                return call_user_func_array([$class, $route['action']], []);
+                return call_user_func_array([$class, $route['action']], array_values($request->parameters));
             }
         } else {
             throw new RouterActionNotFound();

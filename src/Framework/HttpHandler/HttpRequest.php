@@ -2,6 +2,7 @@
 
 namespace Framework\HttpHandler;
 
+use Framework\router\enums\HttpMethods;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamInterface;
@@ -11,6 +12,8 @@ class HttpRequest implements RequestInterface
 {
     use MessageTrait;
     use RequestTrait;
+
+    public array $parameters;
 
     /**
      * @param string $method HTTP method
@@ -29,6 +32,7 @@ class HttpRequest implements RequestInterface
         $this->uri = $uri;
         $this->setHeaders($headers);
         $this->protocol = $version;
+        $this->parameters = $_GET;
 
         if (!$this->hasHeader('Host')) {
             $this->updateHostFromUri();

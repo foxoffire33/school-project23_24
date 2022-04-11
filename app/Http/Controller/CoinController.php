@@ -26,13 +26,13 @@ class CoinController extends Controller
         return $this->view->resolve('Coin/Index', ['models' => Coin::findAll()]);
     }
 
-    #[HttpGet('/coins/show')]
+    #[HttpGet('/coins/:id')]
     #[ThrottleMiddleware(120, 60)]
     #[AuthenticateMiddleware]
     #[RoleBasedAccessMiddleware(self::class, 'show')]
-    public function show(HttpRequest $httpRequest): ?string
+    public function show(int $id): ?string
     {
-        $entity = Coin::findById($httpRequest->attributes->id);
+        $entity = Coin::findById($id);
         return $this->view->resolve('Coin/Show', ['model' => $entity]);
     }
 }
