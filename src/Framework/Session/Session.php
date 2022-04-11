@@ -4,7 +4,7 @@ namespace Framework\Session;
 
 use App\Models\Users;
 use Framework\AccessControl\Exceptions\UserNotFoundException;
-use Framework\database\exceptions\RecordNotFoundException;
+use Framework\DatabaseHandler\exceptions\RecordNotFoundException;
 use http\Client\Curl\User;
 
 class Session

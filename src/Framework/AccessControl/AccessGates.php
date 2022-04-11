@@ -3,7 +3,7 @@
 namespace Framework\AccessControl;
 
 use App\Models\Users;
-use Framework\database\Entity;
+use Framework\DatabaseHandler\Entity;
 use Framework\Middleware\HttpUnauthorizedException;
 
 class AccessGates

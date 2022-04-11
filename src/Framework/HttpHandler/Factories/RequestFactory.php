@@ -1,9 +1,9 @@
 <?php
 
-namespace Framework\HttpResponse\Factories;
+namespace Framework\HttpHandler\Factories;
 
-use Framework\HttpResponse\HttpRequest;
-use Framework\HttpResponse\HttpResponse;
+use Framework\HttpHandler\HttpRequest;
+use Framework\HttpHandler\HttpResponse;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\UriInterface;

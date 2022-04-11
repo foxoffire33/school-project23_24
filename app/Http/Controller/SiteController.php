@@ -2,7 +2,7 @@
 
 namespace App\Http\Controller;
 
-use Framework\database\MysqlConnection;
+use Framework\DatabaseHandler\MysqlConnection;
 use Framework\Middleware\Attributes\RoleBasedAccessMiddleware;
 use Framework\Router\Attributes\HttpGet;
 use Framework\Validator\Validator;

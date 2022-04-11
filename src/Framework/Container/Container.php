@@ -2,13 +2,13 @@
 
 namespace Framework\Container;
 
-use Framework\Cache\MemCacheService;
+use Framework\CacheHandler\MemCacheService;
 use Framework\Container\Interfaces\ContainerInterface;
 use Framework\Core\Application;
 use Framework\core\Attribute;
 use Framework\core\Config;
 use Framework\core\Singleton;
-use Framework\database\MysqlConnection;
+use Framework\DatabaseHandler\MysqlConnection;
 use Framework\Router\Attributes\HttpGet;
 use http\Exception;
 use MongoDB\BSON\Type;

@@ -7,8 +7,8 @@ use Framework\AccessControl\Exceptions\ConfigurationNotFoundException;
 use Framework\AccessControl\Exceptions\SessionNotFoundException;
 use Framework\AccessControl\Exceptions\UserNotFoundException;
 use Framework\AccessControl\Exceptions\UserRoleNotFound;
-use Framework\database\exceptions\RecordNotFoundException;
-use Framework\database\MysqlConnection;
+use Framework\DatabaseHandler\exceptions\RecordNotFoundException;
+use Framework\DatabaseHandler\MysqlConnection;
 use Framework\Session\Session;
 
 class AccessControl

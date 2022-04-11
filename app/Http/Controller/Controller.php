@@ -3,7 +3,7 @@
 namespace App\Http\Controller;
 
 use Framework\AccessControl\AccessControl;
-use Framework\database\MysqlConnection;
+use Framework\DatabaseHandler\MysqlConnection;
 use Framework\Session\Session;
 use Framework\Validator\Validator;
 use Framework\view\View;

@@ -4,7 +4,7 @@ namespace App\Http\Controller;
 
 use App\Models\Transaction;
 use Framework\Core\Application;
-use Framework\database\MysqlConnection;
+use Framework\DatabaseHandler\MysqlConnection;
 use Framework\Middleware\Attributes\AuthenticateMiddleware;
 use Framework\Middleware\Attributes\RoleBasedAccessMiddleware;
 use Framework\Router\Attributes\HttpGet;

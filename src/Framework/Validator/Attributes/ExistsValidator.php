@@ -2,7 +2,7 @@
 
 namespace Framework\Validator\Attributes;
 
-use Framework\database\exceptions\RecordNotFoundException;
+use Framework\DatabaseHandler\exceptions\RecordNotFoundException;
 use Framework\Validator\BaseValidator;
 use Framework\Validator\Interfaces\ValidatetorInterface;
 

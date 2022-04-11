@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Framework\database\Entity;
+use Framework\DatabaseHandler\Entity;
 use Framework\Validator\Attributes\DoubleValidator;
 use Framework\Validator\Attributes\ExistsValidator;
 use Framework\Validator\Attributes\FloatValidator;

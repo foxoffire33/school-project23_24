@@ -2,7 +2,7 @@
 
 namespace Framework\core;
 
-use Framework\database\MysqlConnection;
+use Framework\DatabaseHandler\MysqlConnection;
 
 class Config extends SingletonFactory
 {

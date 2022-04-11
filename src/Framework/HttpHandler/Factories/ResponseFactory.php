@@ -1,8 +1,8 @@
 <?php
 
-namespace Framework\HttpResponse\Factories;
+namespace Framework\HttpHandler\Factories;
 
-use Framework\HttpResponse\HttpResponse;
+use Framework\HttpHandler\HttpResponse;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 

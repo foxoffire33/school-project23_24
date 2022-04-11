@@ -10,11 +10,11 @@ use App\Http\Controller\TransactionController;
 use App\Http\Controller\UsersController;
 use App\Http\Controller\WalledController;
 use App\Models\Transaction;
-use Framework\Cache\MemCache;
-use Framework\Cache\MemCacheService;
+use Framework\CacheHandler\MemCache;
+use Framework\CacheHandler\MemCacheService;
 use Framework\Container\Container;
 use Framework\Core\Application;
-use Framework\database\MysqlConnection;
+use Framework\DatabaseHandler\MysqlConnection;
 use Framework\Middleware\AbstractHandler;
 use Framework\Middleware\Interfaces\Handler;
 use Framework\Router\enums\HttpMethods;
@@ -75,7 +75,7 @@ class Router implements RouterInterface
     }
 
 
-    public function resolve(\Framework\HttpResponse\HttpRequest|HttpRequest $request): ?string
+    public function resolve(\Framework\HttpHandler\HttpRequest|HttpRequest $request): ?string
     {
 
         $httpMethod = $request->getMethod();

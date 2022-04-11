@@ -1,6 +1,6 @@
 <?php
 
-namespace Framework\database;
+namespace Framework\DatabaseHandler;
 
 use Framework\core\Config;
 use Framework\core\MultiSingletonFactory;

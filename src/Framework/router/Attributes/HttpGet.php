@@ -3,7 +3,7 @@
 namespace Framework\Router\Attributes;
 
 use Framework\core\AttributeFactory;
-use Framework\database\MysqlConnection;
+use Framework\DatabaseHandler\MysqlConnection;
 use Framework\router\enums\HttpMethods;
 use Framework\Router\HttpRoute;
 use Framework\router\interfaces\RouterAttributeInterface;

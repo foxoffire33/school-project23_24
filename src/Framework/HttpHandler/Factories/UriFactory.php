@@ -1,8 +1,8 @@
 <?php
 
-namespace Framework\HttpResponse\Factories;
+namespace Framework\HttpHandler\Factories;
 
-use Framework\HttpResponse\Uri;
+use Framework\HttpHandler\Uri;
 use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Message\UriInterface;
 

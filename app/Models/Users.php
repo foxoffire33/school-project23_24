@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Framework\database\Entity;
+use Framework\DatabaseHandler\Entity;
 use Framework\Validator\Attributes\IntegerValidator;
 
 class Users extends Entity

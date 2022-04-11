@@ -2,7 +2,7 @@
 
 namespace Framework\Validator;
 
-use Framework\database\Entity;
+use Framework\DatabaseHandler\Entity;
 use Framework\Validator\Interfaces\ValidatetorInterface;
 
 abstract class BaseValidator implements ValidatetorInterface

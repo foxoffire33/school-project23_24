@@ -1,6 +1,6 @@
 <?php
 
-namespace Framework\Cache\Exceptions;
+namespace Framework\CacheHandler\Exceptions;
 
 class UnableToConnectToCacheServerException extends \Exception
 {

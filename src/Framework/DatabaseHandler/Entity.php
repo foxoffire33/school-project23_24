@@ -1,11 +1,11 @@
 <?php
 
-namespace Framework\database;
+namespace Framework\DatabaseHandler;
 
 use Framework\Core\Application;
 use Framework\core\Config;
-use Framework\database\exceptions\RecordNotFound;
-use Framework\database\exceptions\RecordNotFoundException;
+use Framework\DatabaseHandler\exceptions\RecordNotFound;
+use Framework\DatabaseHandler\exceptions\RecordNotFoundException;
 use PDO;
 
 abstract class Entity

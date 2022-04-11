@@ -1,6 +1,6 @@
 <?php
 
-namespace Framework\database\exceptions;
+namespace Framework\DatabaseHandler\exceptions;
 
 class RecordNotFoundException extends \Exception
 {
