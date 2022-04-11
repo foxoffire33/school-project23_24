@@ -75,18 +75,15 @@ class Router implements RouterInterface
     }
 
 
-    /**
-     * @param string $requestUrl
-     * support callback function and class::method functions
-     * @return void
-     * @throws UnsupportedRequestMethod
-     */
-    public function resolve(HttpRequest $request): ?string
+    public function resolve(\Framework\HttpResponse\HttpRequest|HttpRequest $request): ?string
     {
 
-        $path = explode('?', $_SERVER['REQUEST_URI']);
-        $route = self::$routes[$request->method->value][$path[0]] ?? null;
-        $routeMiddleware = self::$routesMiddleWare[$request->method->value][$path[0]] ?? null;
+        $httpMethod = $request->getMethod();
+        $httpUrl = $request->getUri();
+
+        $path = explode('?', $httpUrl);
+        $route = self::$routes[$httpMethod][$path[0]] ?? null;
+        $routeMiddleware = self::$routesMiddleWare[$httpMethod][$path[0]] ?? null;
 
         if ($route !== null) {
             if (class_exists($route['class']) && method_exists($route['class'], $route['action'])) {
@@ -99,7 +96,7 @@ class Router implements RouterInterface
                 }
                 //Use DI Container to resolve the class
                 $class = $this->container->get($route['class']);
-                return call_user_func_array([$class, $route['action']], [$request]);
+                return call_user_func_array([$class, $route['action']], []);
             }
         } else {
             throw new RouterActionNotFound();

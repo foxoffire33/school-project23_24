@@ -18,18 +18,23 @@ class View
         $this->base = realpath($_SERVER['DOCUMENT_ROOT']) . '/../app/Views/';
     }
 
-    public function resolve(string $path, array $data = []): Void {
-        $fullFilePath = $this->base.$path.'.render.php';
-        if(file_exists($fullFilePath)){
-            extract($data);
-            include $fullFilePath;
-        }else {
-            throw new ViewFileNotFoundException();
-        }
+    public function resolve(string $path, array $data = []): string
+    {
+        $fullFilePath = $this->base . $path . '.render.php';
+        if (file_exists($fullFilePath)) {
+            $file = file_get_contents($fullFilePath);
+            return eval("?>$file");
+            }
+        return '';
     }
 
-    public function render(){
-        //Find themplate file
-
+    public function render(string $path)
+    {
+//        //Find themplate file
+//        $dom = new \DOMDocument();
+//        $dom->loadHTMLFile($this->base.$path.'.render.php');
+//
+//        $links = $dom->getElementsByTagName('render-div');
+//        var_dump($links->item(0));exit;
     }
 }

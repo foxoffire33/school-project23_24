@@ -16,7 +16,7 @@ class AuthenticateController extends Controller
     #[RoleBasedAccessMiddleware(self::class,'login')]
     public function index()
     {
-        $this->view->resolve('Login/Index');
+        return $this->view->resolve('Login/Index');
     }
 
     #[HttpPost('/login')]

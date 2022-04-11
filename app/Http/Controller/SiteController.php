@@ -20,6 +20,7 @@ class SiteController extends Controller
     public function index()
     {
 
+        //var_dump($this->view->render('Site/Home'));
          return $this->view->resolve('Site/Home');
     }
 
