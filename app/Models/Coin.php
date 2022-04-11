@@ -2,27 +2,16 @@
 
 namespace App\Models;
 
+use App\Traits\SoftDelete;
 use Framework\DatabaseHandler\Entity;
 
 class Coin extends Entity
 {
-    /**
-     * @var string
-     */
+
+    use SoftDelete;
+
     public int $id = 0;
-
-    /**
-     * @var string
-     */
     public string $email;
-
-    /**
-     * @var string
-     */
     public string $name;
-
-    /**
-     * @var string
-     */
     public string $password;
 }

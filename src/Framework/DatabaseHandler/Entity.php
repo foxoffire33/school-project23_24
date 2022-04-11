@@ -77,28 +77,7 @@ abstract class Entity
 
     public static function findOne($options = [])
     {
-        $class = new \ReflectionClass(get_called_class());
-        $tableName = strtolower($class->getShortName());
-        $mysqlConnection = Application::getContainer()->get(MysqlConnection::class);
-        $propsToImplode = [];
-
-
-
-        foreach ($options as $key=>$value) {
-            $propsToImplode[$key] = '`' . $key . '` = :' . $key . '';
-        }
-
-        $inploded = implode(',', $propsToImplode);
-
-
-
-        $statement = $mysqlConnection->db->prepare("select * from {$tableName} where " . $inploded);
-        $statement->setFetchMode(PDO::FETCH_CLASS, $class->getName());
-
-        foreach ($options as $key=>$value) {
-            $statement->bindParam($key,$value);
-        }
-
+        $statement = self::prepareStatement($options);
         if ($statement->execute())
             return $statement->fetch();
     }
@@ -127,39 +106,41 @@ abstract class Entity
 
     }
 
-    public static function findAll()
-    {
+    private static function prepareStatement($options): \PDOStatement{
         $class = new \ReflectionClass(get_called_class());
         $tableName = strtolower($class->getShortName());
         $mysqlConnection = Application::getContainer()->get(MysqlConnection::class);
-        $statement = $mysqlConnection->db->prepare("select * from {$tableName}");
-        $statement->setFetchMode(PDO::FETCH_CLASS, $class->getName());
-        if ($statement->execute())
-            return $statement->fetchAll();
+        $propsToImplode = [];
 
-        if ($mysqlConnection->mysqlConnection->db->errorCode())
-            throw new \Exception($mysqlConnection->mysqlConnection->db->errorInfo()[2]);
+
+        foreach ($options as $key=>$value) {
+            if($value){
+                $propsToImplode[$key] = '`' . $key . '` = :' . $key . ' ';
+            }else{
+                $propsToImplode[$key] = ' `' . $key . '` '. ' IS NULL ';
+            }
+        }
+
+        $inploded = implode('and', $propsToImplode);
+
+        if(empty($inploded)) {
+            $statement = $mysqlConnection->db->prepare("select * from {$tableName}");
+        }else{
+            $statement = $mysqlConnection->db->prepare("select * from {$tableName} where {$inploded}");
+            foreach ($options as $key=>$value) {
+                if($value)
+                    $statement->bindParam($key,$value);
+            }
+        }
+
+        $statement->setFetchMode(PDO::FETCH_CLASS, $class->getName());
+        return $statement;
     }
 
-    public function find($options = [])
+    public static function findAll($options = [])
     {
-
-        $result = [];
-        $query = '';
-
-        if (is_array($options)) {
-
-        } elseif (is_stirng($options)) {
-            $query = 'WHERE ' . $options;
-        } else {
-            throw new \Exception('Wrong parameter type of options');
-        }
-
-        $raw = $this->mysqlConnection->execute($query);
-        foreach ($raw as $rawRow) {
-            $result[] = self::map($rawRow);
-        }
-
-        return $result;
+        $statement = self::prepareStatement($options);
+        if ($statement->execute())
+            return $statement->fetchAll();
     }
 }
