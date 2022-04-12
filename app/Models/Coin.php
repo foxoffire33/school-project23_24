@@ -10,8 +10,7 @@ class Coin extends Entity
 
     use SoftDelete;
 
-    public int $id = 0;
-    public string $email;
-    public string $name;
-    public string $password;
+    public ?int $id = null;
+    public string $short_name, $name;
+    public float $value;
 }

@@ -22,13 +22,11 @@ class View
     {
         $fullFilePath = $this->base . $path . '.render.php';
         if (file_exists($fullFilePath)) {
-            ob_start();
             $file = file_get_contents($fullFilePath);
             extract($data);
-
+            ob_start();
             eval("?>$file");
-            $outputBuffer = ob_get_clean();
-            return $outputBuffer;
+            return ob_get_clean();
         }
         throw new ViewFileNotFoundException();
     }

@@ -28,7 +28,7 @@ if(isset($data['models'])){
         $td = new \Framework\view\components\Table\Column('px-6 py-4',(\App\Models\Coin::findById($model->coin_id))->name);
         $tr->addLeave($td);
 
-        $td = new \Framework\view\components\Table\Column('px-6 py-4',$model->value);
+        $td = new \Framework\view\components\Table\Column('px-6 py-4',strval($model->value) . '&nbsp');
         $tr->addLeave($td);
 
         $tbody->addLeave($tr);

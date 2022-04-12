@@ -81,9 +81,9 @@ abstract class Entity
         foreach ($propsToImplode as $key=>$value){
             $statement->bindParam($key, $this->{$key});
         }
-        if ($mysqlConnection->db->errorCode() > 0) {
+
+        if ($mysqlConnection->db->errorCode() > 0)
             throw new \Exception($mysqlConnection->db->errorInfo()[2]);
-        }
 
         return $statement->execute();
     }

@@ -1,7 +1,7 @@
 <form action="/users<?= (isset($entity->id) ? "/{$entity->id}" : '') ?>" method="post">
+    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
     <?php if (isset($entity)): ?>
         <input type="hidden" name="_method" value="patch"/>
-        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
     <?php endif; ?>
     <div class="relative z-0 mb-6 w-full group">
         <input type="email" name="email"

@@ -71,7 +71,7 @@ class CoinController extends Controller
     public function save(){
         $entity = Coin::create($_POST);
         if($entity->save())
-            header("Location: /users");
+            header("Location: /coins");
     }
 
     #[HttpPatch('/coins/:id')]
