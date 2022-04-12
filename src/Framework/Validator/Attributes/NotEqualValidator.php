@@ -31,6 +31,6 @@ class NotEqualValidator extends BaseValidator implements ValidatetorInterface
 
     function validated(): array
     {
-        return array_map(fn() => [$this->attribute => $this->model->{$this->attribute}],$this->valid);
+        return array_map(fn() => [$this->attribute => $this->entity->{$this->attribute}],$this->valid);
     }
 }

@@ -26,7 +26,7 @@ class View
             $file = file_get_contents($fullFilePath);
             extract($data);
 
-            var_dump(eval("?>$file"));exit;
+            eval("?>$file");
             $outputBuffer = ob_get_clean();
             return $outputBuffer;
         }

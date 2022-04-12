@@ -1,22 +1,10 @@
 <?php
 
-namespace Framework\Core;
+namespace Framework\core;
 
-use App\Http\Controller\AuthenticateController;
-use App\Http\Controller\CoinController;
-use App\Http\Controller\RegisterController;
-use App\Http\Controller\SiteController;
-use App\Http\Controller\TransactionController;
-use App\Http\Controller\UsersController;
-use App\Http\Controller\WalledController;
-use Framework\CacheHandler\MemCacheService;
 use Framework\Container\Container;
-use Framework\DatabaseHandler\MysqlConnection;
 use Framework\HttpHandler\HttpRequest;
 use Framework\HttpHandler\HttpResponse;
-use Framework\HttpHandler\Response;
-use Framework\Middleware\Attributes\AuthenticateMiddleware;
-use Framework\router\Route;
 use Framework\router\Router;
 
 class Application

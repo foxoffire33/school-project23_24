@@ -9,12 +9,9 @@ use Framework\Validator\Interfaces\ValidatetorInterface;
 class IntegerValidator extends BaseValidator implements ValidatetorInterface
 {
 
-    public function __construct()
-    {}
-
     function isValid(): bool
     {
-        return is_integer($this->entity->{$this->attribute});
+        return  is_integer($this->entity->{$this->attribute});
     }
 
     function hasMessages(): bool
@@ -30,6 +27,6 @@ class IntegerValidator extends BaseValidator implements ValidatetorInterface
 
     function validated(): array
     {
-        return array_map(fn() => [$this->attribute => $this->model->{$this->attribute}],$this->valid);
+        return array_map(fn() => [$this->attribute => $this->entity->{$this->attribute}],$this->valid);
     }
 }

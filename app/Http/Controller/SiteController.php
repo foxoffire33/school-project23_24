@@ -2,15 +2,8 @@
 
 namespace App\Http\Controller;
 
-use Framework\DatabaseHandler\MysqlConnection;
 use Framework\Middleware\Attributes\RoleBasedAccessMiddleware;
 use Framework\Router\Attributes\HttpGet;
-use Framework\Validator\Validator;
-use Framework\view\components\Body\Div;
-use Framework\view\components\Form\Form;
-use Framework\view\components\Form\InputField;
-use Framework\view\components\Form\TextField;
-use Framework\view\View;
 
 class SiteController extends Controller
 {

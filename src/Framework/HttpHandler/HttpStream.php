@@ -101,12 +101,7 @@ class HttpStream implements StreamInterface
                 throw $e;
             }
 
-            if (\is_array($errorHandler = \set_error_handler('var_dump'))) {
-                $errorHandler = $errorHandler[0] ?? null;
-            }
-            \restore_error_handler();
-
-            if ($e instanceof \Error || $errorHandler instanceof SymfonyErrorHandler || $errorHandler instanceof SymfonyLegacyErrorHandler) {
+            if ($e instanceof \Error) {
                 return \trigger_error((string)$e, \E_USER_ERROR);
             }
 

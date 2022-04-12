@@ -3,17 +3,18 @@
 namespace Framework\DatabaseHandler;
 
 use Framework\core\Config;
-use Framework\core\MultiSingletonFactory;
-use Framework\core\SingletonFactory;
+use Framework\core\Factories\MultiSingletonFactory;
 
 class MysqlConnection extends MultiSingletonFactory
 {
+
+    public $db = null;
 
     private function __construct(public Config $config)
     {
         try {
             $this->db = new \PDO("mysql:host={$this->config->database['host']};dbname={$this->config->database['name']}", $this->config->database['username'], $this->config->database['password']);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
              throw new \Exception('Error creating a database connection ');
         }
     }

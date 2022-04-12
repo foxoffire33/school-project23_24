@@ -8,11 +8,6 @@ use Framework\Validator\Interfaces\ValidatetorInterface;
 #[\Attribute]
 class FloatValidator extends BaseValidator implements ValidatetorInterface
 {
-
-    public function __construct()
-    {
-    }
-
     function isValid(): bool
     {
         return  is_float($this->entity->{$this->attribute});
@@ -31,6 +26,6 @@ class FloatValidator extends BaseValidator implements ValidatetorInterface
 
     function validated(): array
     {
-        return array_map(fn() => [$this->attribute => $this->model->{$this->attribute}],$this->valid);
+        return array_map(fn() => [$this->attribute => $this->entity->{$this->attribute}],$this->valid);
     }
 }

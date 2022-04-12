@@ -1,6 +1,6 @@
 <?php
 
-namespace Framework\core;
+namespace Framework\core\Factories;
 
 abstract class MultiSingletonFactory extends SingletonFactory {
 

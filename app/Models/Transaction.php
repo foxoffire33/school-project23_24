@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Traits\SoftDelete;
 use Framework\DatabaseHandler\Entity;
-use Framework\Validator\Attributes\DoubleValidator;
 use Framework\Validator\Attributes\ExistsValidator;
 use Framework\Validator\Attributes\FloatValidator;
 use Framework\Validator\Attributes\IntegerValidator;

@@ -2,11 +2,8 @@
 
 namespace Framework\Router\Attributes;
 
-use Framework\core\AttributeFactory;
-use Framework\DatabaseHandler\MysqlConnection;
 use Framework\router\enums\HttpMethods;
 use Framework\Router\HttpRoute;
-use Framework\router\interfaces\RouterAttributeInterface;
 
 #[\Attribute]
 class HttpGet extends HttpRoute

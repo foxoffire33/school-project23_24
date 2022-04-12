@@ -13,28 +13,30 @@ use Framework\view\View;
 class AuthenticateController extends Controller
 {
     #[HttpGet('/login')]
-    #[RoleBasedAccessMiddleware(self::class,'login')]
+    #[RoleBasedAccessMiddleware(self::class, 'login')]
     public function index()
     {
         return $this->view->resolve('Login/Index');
     }
 
     #[HttpPost('/login')]
-    #[RoleBasedAccessMiddleware(self::class,'login')]
-    public function create(){
-        if($model = Users::findOne(['email' => $_POST['email']])){
-            if(password_verify($_POST['password'],$model->password)){
+    #[RoleBasedAccessMiddleware(self::class, 'login')]
+    public function create()
+    {
+        if ($model = Users::findOne(['email' => $_POST['email']])) {
+            if (password_verify($_POST['password'], $model->password)) {
                 $this->session->set(Session::SESSION_USER_ID_KEY, $model->id);
-                return header("Location: /walled");
+                header("Location: /walled");
             }
             $_SESSION['flash']['error'][] = "Invalied cerdentials";
-            return header("Location: /login");
+            header("Location: /login");
         }
-            return header("Location: /login");
+        header("Location: /login");
     }
 
     #[HttpGet('/logout')]
-    public function logout(){
+    public function logout()
+    {
         session_destroy();
         header("Location: /");
     }

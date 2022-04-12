@@ -12,6 +12,7 @@ class Users extends Entity
 
     use SoftDelete;
 
+    #[StringValidator]
     public string $email;
     public string $name;
     public string $password;

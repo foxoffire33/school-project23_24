@@ -1,0 +1,1 @@
+docker run --rm -it -v ${PWD}:/data/project/ -p 8080:8080 jetbrains/qodana-php --show-report

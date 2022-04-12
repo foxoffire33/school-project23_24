@@ -5,7 +5,8 @@ namespace Framework\CacheHandler;
 //todo implemete memcache for DI Conatainers and Router
 use Framework\CacheHandler\Exceptions\UnableToConnectToCacheServerException;
 use Framework\core\Config;
-use Framework\core\SingletonFactory;
+use Framework\core\Factories\SingletonFactory;
+
 
 class MemCacheService extends SingletonFactory
 {

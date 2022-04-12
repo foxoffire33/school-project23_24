@@ -2,10 +2,8 @@
 
 namespace Framework\Router;
 
-use Framework\core\Attribute;
-use Framework\core\AttributeFactory;
+use Framework\core\Factories\AttributeFactory;
 use Framework\router\enums\HttpMethods;
-use Framework\router\interfaces\RouteInterface;
 
 class HttpRoute extends AttributeFactory
 {
@@ -25,8 +23,7 @@ class HttpRoute extends AttributeFactory
 
     public function resolve(): void
     {
-        $path = explode('?', $_SERVER['REQUEST_URI'])[0];
-        $action = $this->routes[$_SERVER['REQUEST_METHOD']][$path] ?? null;
+
 
         // TODO: Implement resolve() method.
     }

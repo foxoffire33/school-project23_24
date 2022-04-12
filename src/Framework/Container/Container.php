@@ -86,7 +86,7 @@ class Container implements ContainerInterface
             return $this->loadFactory($reflectionClass, $id);
         }
 
-        $this->memcache->setKey(self::MEMCACHE_KEY, self::$entries);
+        $this->memCacheService->setKey(self::MEMCACHE_KEY, self::$entries);
     }
 
     private function loadFactory(\ReflectionClass $reflectionClass, string $id)
@@ -103,14 +103,12 @@ class Container implements ContainerInterface
 
     private function loadDependencies(array $parameters, string $id, $constructor)
     {
-        $counter = -1;
         return array_map(
-            function (\ReflectionParameter $parameter) use ($id, $counter, $constructor) {
+            function (\ReflectionParameter $parameter) use ($id, $constructor) {
                 $name = $parameter->getName();
 
 
                 $type = $parameter->getType();
-                $counter += 1;
                 if (!$type)
                     //   throw new \Exception('Failed to resolve class "' . $id . '" because param "' . $name . '" is missing a type hint');
 

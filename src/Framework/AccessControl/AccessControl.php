@@ -28,11 +28,11 @@ class AccessControl
      * Bij het installeren van deze klaase moet je eerst de configuratie inladen
      * @param array $config
      */
-    public function __construct(private Session $session, private MysqlConnection $mysqlConnection, public AccessGates $gates)
+    public function __construct(private Session $session, public AccessGates $gates)
     {
         try {
             $this->config = include $_SERVER['DOCUMENT_ROOT'] . '/..//src/Framework/AccessControl/Configuration/RolsConfig.php';
-        } catch (\TypeError $exception) {
+        } catch (\TypeError) {
             throw new ConfigurationNotFoundException();
         }
 
@@ -54,13 +54,13 @@ class AccessControl
     {
         $roleValues = array_values($this->config[self::USER_ROLES_KEY_NAME]);
         $roleNames = array_keys($this->config[self::USER_ROLES_KEY_NAME]);
+        $result = false;
         //Controleer of de gebruiker bestaat
         if (is_null($this->session))
             throw new UserNotFoundException();
 
             $userRolesJson = json_decode($this->session->user->roles);
             if ($userRolesJson) {
-                $result = false;
                 foreach ($userRolesJson as $item) {
                     if ($result)
                         break;

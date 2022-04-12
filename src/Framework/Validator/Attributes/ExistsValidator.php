@@ -19,7 +19,7 @@ class ExistsValidator extends BaseValidator implements ValidatetorInterface
         try {
             $foreignEntity = ($this->foreignEntity)::findById($this->attribute);
             return !empty($foreignEntity);
-        }catch (RecordNotFoundException $exception){
+        }catch (RecordNotFoundException){
             $this->messages[] = "Record not found";
             return false;
         }
@@ -39,6 +39,6 @@ class ExistsValidator extends BaseValidator implements ValidatetorInterface
 
     function validated(): array
     {
-        return array_map(fn() => [$this->attribute => $this->model->{$this->attribute}],$this->valid);
+        return array_map(fn() => [$this->attribute => $this->entity->{$this->attribute}],$this->valid);
     }
 }

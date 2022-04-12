@@ -1,6 +1,6 @@
 <?php
 
-namespace Framework\Router;
+namespace Framework\router;
 
 use App\Http\Controller\AuthenticateController;
 use App\Http\Controller\CoinController;
@@ -9,18 +9,13 @@ use App\Http\Controller\SiteController;
 use App\Http\Controller\TransactionController;
 use App\Http\Controller\UsersController;
 use App\Http\Controller\WalledController;
-use App\Models\Transaction;
-use Framework\CacheHandler\MemCache;
 use Framework\CacheHandler\MemCacheService;
 use Framework\Container\Container;
-use Framework\Core\Application;
-use Framework\DatabaseHandler\MysqlConnection;
 use Framework\Middleware\AbstractHandler;
 use Framework\Middleware\Interfaces\Handler;
 use Framework\Router\enums\HttpMethods;
 use Framework\router\exceptions\RouterActionDuplicatedException;
 use Framework\Router\exceptions\RouterActionNotFound;
-use Framework\Router\exceptions\UnsupportedRequestMethod;
 use Framework\Router\interfaces\RouterInterface;
 
 class Router implements RouterInterface
@@ -64,15 +59,14 @@ class Router implements RouterInterface
      */
     public function __construct(private Container $container, private MemCacheService $memCache)
     {
-        $this->memCache->FlushAll();
         //is de cache leeg resolve dan alle routes en zet deze in de cache
         if (empty($this->memCache->getByKey(self::CACHED_ROUTE_KEY))) {
             $this->register($this->routerControllers);
-            //   $this->memCache->setKey(self::CACHED_ROUTE_KEY, self::$routes);
+               $this->memCache->setKey(self::CACHED_ROUTE_KEY, self::$routes);
         }
 
         //Haal alle routes op uit de cache
-        //  self::$routes = $this->memCache->getByKey(self::CACHED_ROUTE_KEY);
+          self::$routes = $this->memCache->getByKey(self::CACHED_ROUTE_KEY);
     }
 
 
@@ -122,6 +116,7 @@ class Router implements RouterInterface
     {
 
         foreach ($attributes as $attribute) {
+            $lastRoute = null;
             $route = $attribute->newInstance();
             if ($route instanceof HttpRoute) {
                 $lastRoute = $route;

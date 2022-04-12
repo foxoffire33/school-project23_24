@@ -11,6 +11,7 @@ use PDO;
 abstract class Entity
 {
 
+    private MysqlConnection $mysqlConnection;
     public function __construct()
     {
         $this->mysqlConnection = Application::getContainer()->get(MysqlConnection::class);
@@ -110,7 +111,7 @@ abstract class Entity
             if($result)
                 return $result;
 
-            throw new RecordNotFoundException;
+       //     throw new RecordNotFoundException;
         }
 
 

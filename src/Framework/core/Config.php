@@ -2,10 +2,11 @@
 
 namespace Framework\core;
 
-use Framework\DatabaseHandler\MysqlConnection;
+use Framework\core\Factories\SingletonFactory;
 
 class Config extends SingletonFactory
 {
+    private ?array $config = null;
 
     private function __construct()
     {
