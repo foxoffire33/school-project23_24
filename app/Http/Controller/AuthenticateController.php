@@ -34,7 +34,7 @@ class AuthenticateController extends Controller
         header("Location: /login");
     }
 
-    #[HttpGet('/logout')]
+    #[HttpPost('/logout')]
     public function logout()
     {
         session_destroy();

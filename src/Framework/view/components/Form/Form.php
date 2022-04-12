@@ -14,6 +14,7 @@ class Form extends CompositeWithLeaves implements LeafInterface
         public string $class = 'w-full max-w-lg'
     )
     {
+        $this->addLeave(new InputField('csrf_token','csrf_token','hidden',$_SESSION['csrf_token'],'',''));
     }
 
     public function addLeave(LeafInterface $leave): void
