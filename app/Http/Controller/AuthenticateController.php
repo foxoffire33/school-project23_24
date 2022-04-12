@@ -26,7 +26,8 @@ class AuthenticateController extends Controller
         if ($model = Users::findOne(['email' => $_POST['email']])) {
             if (password_verify($_POST['password'], $model->password)) {
                 $this->session->set(Session::SESSION_USER_ID_KEY, $model->id);
-                header("Location: /walled");
+                header("Location: /coins");
+                return;
             }
             $_SESSION['flash']['error'][] = "Invalied cerdentials";
             header("Location: /login");

@@ -4,6 +4,7 @@ namespace Framework\AccessControl;
 
 use App\Http\Controller\AuthenticateController;
 use App\Http\Controller\CoinController;
+use App\Http\Controller\DashboardController;
 use App\Http\Controller\RegisterController;
 use App\Http\Controller\SiteController;
 use App\Http\Controller\TransactionController;
@@ -37,7 +38,8 @@ return [
             CoinController::class,
             TransactionController::class,
             WalledController::class,
-            UsersController::class
+            UsersController::class,
+            DashboardController::class
         ]
     ]
 ];

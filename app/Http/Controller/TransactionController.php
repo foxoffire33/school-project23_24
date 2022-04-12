@@ -18,7 +18,7 @@ class TransactionController extends Controller
     #[RoleBasedAccessMiddleware(self::class,'index')]
     public function index(): ?string
     {
-        return $this->view->resolve('Transaction/Index',['models' => Transaction::findAll()]);
+        return $this->view->resolve('Transaction/Admin',['entities' => Transaction::findAll()]);
     }
 
     #[HttpGet('/transactions/create')]

@@ -70,7 +70,6 @@ class AccessControl
                         throw new UserRoleNotFound();
 
                     $fetchedController = $this->config[self::ROLES_ACTIONS_KEY_NAME][$roleNames[$item]][$controller] ?? null;
-
                     //Als het een array is dan moet er gekeken worden of de actie er in staat
 
                     if ($fetchedController && is_array($fetchedController)) {
@@ -79,11 +78,14 @@ class AccessControl
                     }
 
                     //Als de controller als key bestaat en het is geen array return true
-                    $result = is_string($controller);
+                    $result = is_null($fetchedController) && in_array($controller,$this->config[self::ROLES_ACTIONS_KEY_NAME][$roleNames[$item]]);
                 }
             }
-
         return $result;
+    }
+
+    private function checkRole(){
+
     }
 
 }

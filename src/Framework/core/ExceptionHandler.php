@@ -9,7 +9,8 @@ class ExceptionHandler
     public static function handler($exception): void
     {
         $view = Application::getContainer()->get(View::class);
-        header("HTTP/1.1 {$exception->getCode()} {$exception->getMessage()}");
+        if($exception->getCode() > 0)
+            header("HTTP/1.1 {$exception->getCode()} {$exception->getMessage()}");
         echo $view->resolve('Layouts/HttpException', ['exception' => $exception]);
     }
 }

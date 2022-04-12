@@ -23,7 +23,7 @@
                     </div>
                     <div class="hidden justify-between items-center w-full md:flex md:w-auto md:order-1"
                          id="mobile-menu-3">
-                        <p class="size-lg font-extrabold">Manage users</p>
+                        <p class="size-lg font-extrabold">Coins</p>
                     </div>
                 </div>
             </div>
@@ -37,12 +37,17 @@
                                 <tr>
                                     <th
                                             class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase border-b border-gray-200 bg-gray-50">
-                                        Name
+                                        Short name
                                     </th>
                                     <th
                                             class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase border-b border-gray-200 bg-gray-50">
-                                        Email
+                                        Value
                                     </th>
+                                    <th
+                                            class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase border-b border-gray-200 bg-gray-50">
+                                        Full name
+                                    </th>
+                                    <?php if(isset($_SESSION['userID'])): ?>
                                     <th
                                             class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase border-b border-gray-200 bg-gray-50">
                                         Edit
@@ -51,32 +56,34 @@
                                             class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-left text-gray-500 uppercase border-b border-gray-200 bg-gray-50">
                                         Delete
                                     </th>
+                                    <?php endif; ?>
                                 </tr>
                                 </thead>
                                 <tbody class="bg-white">
                                 <?php foreach ($entities as $entity): ?>
                                     <tr class="hover:bg-gray-50">
-                                        <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
+                                        <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200 w-1/12">
                                             <div class="flex items-center">
-                                                <div class="flex-shrink-0 w-10 h-10">
-                                                    <img class="w-10 h-10 rounded-full"
-                                                         src="https://source.unsplash.com/user/erondu"
-                                                         alt="admin dashboard ui">
-                                                </div>
                                                 <div class="ml-4">
-                                                    <div class="text-sm font-medium leading-5 text-gray-900">
-                                                        <?= $entity->name ?>
+                                                    <div class="text-sm font-medium leading-5 text-gray-900 w-1/12">
+                                                        <?= $entity->short_name ?>
                                                     </div>
                                                 </div>
                                             </div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
                                             <div class="text-sm leading-5 text-gray-500">
-                                                <?= $entity->email ?>
+                                                <?= $entity->value ?>
                                             </div>
                                         </td>
+                                        <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200 w-9/12">
+                                            <div class="text-sm leading-5 text-gray-500">
+                                                <?= $entity->name ?>
+                                            </div>
+                                        </td>
+                                        <?php if(isset($_SESSION['userID'])): ?>
                                         <td class="px-6 py-4 text-sm leading-5 text-gray-500 whitespace-no-wrap border-b border-gray-200 w-1/12">
-                                            <a href="/users/<?= $entity->id; ?>/edit">
+                                            <a href="/coins/<?= $entity->id; ?>/edit">
                                                 <svg xmlns="http://www.w3.org/2000/svg"
                                                      class="w-6 h-6 text-blue-400"
                                                      fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -98,6 +105,7 @@
                                                 </button>
                                             </form>
                                         </td>
+                                        <?php endif; ?>
                                     </tr>
                                 <?php endforeach; ?>
                                 </tbody>
@@ -112,7 +120,7 @@
 </div>
 <script>
     function UpdateID(itemID){
-        document.getElementById('model-delete-action').setAttribute('action','/users/' + itemID);
+        document.getElementById('model-delete-action').setAttribute('action','/coins/' + itemID);
     }
 </script>
 <?php include $_SERVER['DOCUMENT_ROOT'] . '/../app/Views/Layouts/footer.render.php' ?>

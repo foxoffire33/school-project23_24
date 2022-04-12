@@ -9,6 +9,6 @@ abstract class BaseValidator implements ValidatetorInterface
 {
     public $messages = [];
     public $valid = [];
-    protected Entity $entity;
-    protected string $attribute;
+    public Entity $entity;
+    public string $attribute;
 }

@@ -4,6 +4,7 @@ namespace Framework\router;
 
 use App\Http\Controller\AuthenticateController;
 use App\Http\Controller\CoinController;
+use App\Http\Controller\DashboardController;
 use App\Http\Controller\RegisterController;
 use App\Http\Controller\SiteController;
 use App\Http\Controller\TransactionController;
@@ -49,7 +50,8 @@ class Router implements RouterInterface
         CoinController::class,
         TransactionController::class,
         AuthenticateController::class,
-        WalledController::class
+        WalledController::class,
+        DashboardController::class
     ];
 
     /**
@@ -82,6 +84,7 @@ class Router implements RouterInterface
         $replacedPath = preg_replace('/(\d+)/', ':id', $path[0]);
         $route = self::$routes[$httpMethod][$replacedPath] ?? null;
         $routeMiddleware = self::$routesMiddleWare[$httpMethod][$replacedPath] ?? null;
+
 
         if ($route !== null) {
             if (class_exists($route['class']) && method_exists($route['class'], $route['action'])) {
@@ -117,7 +120,6 @@ class Router implements RouterInterface
     {
 
         foreach ($attributes as $attribute) {
-            $lastRoute = null;
             $route = $attribute->newInstance();
             if ($route instanceof HttpRoute) {
                 $lastRoute = $route;
