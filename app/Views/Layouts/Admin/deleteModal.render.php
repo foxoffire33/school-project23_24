@@ -29,6 +29,7 @@
                     this?</h3>
                 <form id="model-delete-action" action="/users/" method="post">
                     <input type="hidden" name="_method" value="delete"/>
+                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                     <button id="sure-delete" data-modal-toggle="popup-modal" type="submit"
                             class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">
                         Yes, I'm sure
