@@ -2,15 +2,16 @@
 
 namespace Framework\Router\Attributes;
 
+use Framework\router\enums\HttpMethods;
 use Framework\Router\HttpRoute;
 use Framework\router\interfaces\RouterAttributeInterface;
 
 #[\Attribute]
-class HttpPath extends HttpRoute implements RouterAttributeInterface
+class HttpPatch extends HttpRoute implements RouterAttributeInterface
 {
     public function __construct(public string $path = '')
     {
-
         parent::__construct($this->path);
+        $this->method = HttpMethods::PATCH;
     }
 }

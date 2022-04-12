@@ -1,8 +1,7 @@
-<?php include $_SERVER['DOCUMENT_ROOT'] . '/../app/Views/Layouts/Admin/header.render.php' ?>
+<?php include $_SERVER['DOCUMENT_ROOT'] . '/../app/Views/Layouts/header.render.php' ?>
 
     <body>
 <div class="flex h-screen">
-    <?php include $_SERVER['DOCUMENT_ROOT'] . '/../app/Views/Layouts/Admin/navigation.render.php' ?>
     <div class="w-full px-4 py-2 bg-gray-200 lg:w-full">
         <div class="container mx-auto mt-12">
             <div class="bg-white border-gray-200 px-2 sm:px-4 py-2.5 rounded dark:bg-gray-800">
@@ -21,23 +20,6 @@
                                    class="block p-2 pl-10 w-full text-gray-900 bg-gray-50 rounded-lg border border-gray-300 sm:text-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                    placeholder="Search...">
                         </div>
-                        <button data-collapse-toggle="mobile-menu-3" type="button"
-                                class="inline-flex items-center p-2 ml-3 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-                                aria-controls="mobile-menu-3" aria-expanded="false">
-                            <span class="sr-only">Open main menu</span>
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
-                                 xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                      d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                                      clip-rule="evenodd"></path>
-                            </svg>
-                            <svg class="hidden w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
-                                 xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                      clip-rule="evenodd"></path>
-                            </svg>
-                        </button>
                     </div>
                     <div class="hidden justify-between items-center w-full md:flex md:w-auto md:order-1"
                          id="mobile-menu-3">
@@ -48,6 +30,7 @@
             <div class="flex flex-col mt-8">
                 <div class="py-2 -my-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
                     <div class="inline-block min-w-full overflow-hidden align-middle border-b border-gray-200 shadow sm:rounded-lg">
+
                         <?php if (!empty($entities)): ?>
                             <table class="min-w-full">
                                 <thead>
@@ -92,8 +75,8 @@
                                                 <?= $entity->email ?>
                                             </div>
                                         </td>
-                                        <td class="px-6 py-4 text-sm leading-5 text-gray-500 whitespace-no-wrap border-b border-gray-200">
-                                            <a href="/users/<?= $entity->id; ?>">
+                                        <td class="px-6 py-4 text-sm leading-5 text-gray-500 whitespace-no-wrap border-b border-gray-200 w-1/12">
+                                            <a href="/users/<?= $entity->id; ?>/edit">
                                                 <svg xmlns="http://www.w3.org/2000/svg"
                                                      class="w-6 h-6 text-blue-400"
                                                      fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -103,7 +86,7 @@
                                                 </svg>
                                             </a>
                                         </td>
-                                        <td class="px-6 py-4 text-sm leading-5 text-gray-500 whitespace-no-wrap border-b border-gray-200">
+                                        <td class="px-6 py-4 text-sm leading-5 text-gray-500 whitespace-no-wrap border-b border-gray-200 w-1/12">
 
                                                 <button onclick="UpdateID(<?= $entity->id; ?>)" type="button" data-modal-toggle="popup-modal" data-action="/users/">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-red-400"
@@ -132,4 +115,4 @@
         document.getElementById('model-delete-action').setAttribute('action','/users/' + itemID);
     }
 </script>
-<?php include $_SERVER['DOCUMENT_ROOT'] . '/../app/Views/Layouts/Admin/footer.render.php' ?>
+<?php include $_SERVER['DOCUMENT_ROOT'] . '/../app/Views/Layouts/footer.render.php' ?>

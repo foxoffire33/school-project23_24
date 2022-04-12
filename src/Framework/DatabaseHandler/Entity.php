@@ -16,6 +16,18 @@ abstract class Entity
         $this->mysqlConnection = Application::getContainer()->get(MysqlConnection::class);
     }
 
+    public function update(array $attributes)
+    {
+        $class = new \ReflectionClass(get_called_class());
+
+        foreach ($class->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
+            if (isset($attributes[$property->getName()]) && !empty($attributes[$property->getName()])) {
+                $property->setValue($this, $attributes[$property->getName()]);
+            }
+        }
+        return $this;
+    }
+
     public static function create(array $array)
     {
         $class = new \ReflectionClass(get_called_class());

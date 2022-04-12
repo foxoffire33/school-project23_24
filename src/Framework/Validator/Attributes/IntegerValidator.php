@@ -10,8 +10,7 @@ class IntegerValidator extends BaseValidator implements ValidatetorInterface
 {
 
     public function __construct()
-    {
-    }
+    {}
 
     function isValid(): bool
     {

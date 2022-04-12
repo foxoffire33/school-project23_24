@@ -39,6 +39,7 @@ class Application
     public function repsonse(): ?string
     {
         $httpRequest = new HttpRequest($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
+       // var_dump($httpRequest);exit;
         $applicationResponse = $this->router->resolve($httpRequest);
         $response = new HttpResponse(200, [], $applicationResponse);
         return $response->getBody();

@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\SoftDelete;
 use Framework\DatabaseHandler\Entity;
 use Framework\Validator\Attributes\IntegerValidator;
+use Framework\Validator\Attributes\StringValidator;
 
 class Users extends Entity
 {

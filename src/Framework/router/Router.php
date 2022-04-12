@@ -64,6 +64,7 @@ class Router implements RouterInterface
      */
     public function __construct(private Container $container, private MemCacheService $memCache)
     {
+        $this->memCache->FlushAll();
         //is de cache leeg resolve dan alle routes en zet deze in de cache
         if (empty($this->memCache->getByKey(self::CACHED_ROUTE_KEY))) {
             $this->register($this->routerControllers);
@@ -110,7 +111,7 @@ class Router implements RouterInterface
     {
         foreach ($controllers as $controller) {
             $reflection = new \ReflectionClass($controller);
-            //  $this->addAttributes($reflection->getAttributes());
+            $this->addAttributes($reflection->getAttributes());
             foreach ($reflection->getMethods() as $method) {
                 $this->addAttributes($method->getAttributes(), $method);
             }
