@@ -2,6 +2,7 @@
 
 namespace Framework\HttpHandler;
 
+use Framework\HttpHandler\Exceptions\MethodNotAllowedException;
 use Framework\router\enums\HttpMethods;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
@@ -28,22 +29,34 @@ class HttpRequest implements RequestInterface
             $uri = new Uri($uri);
 
         //Conteroleer of er een hidden field _method gepost is met de juste method
-        if(isset($_POST['_method']) && in_array(strtolower($_POST['_method']),['delete','put','patch']))
+        $postedMethod = filter_input(INPUT_POST, '_method');
+        if (isset($postedMethod) && in_array(strtolower($postedMethod), ['delete', 'put', 'patch']))
             $method = strtoupper($_POST['_method']);
 
         $this->method = $method;
+
+        if(!$this->csrfCheck())
+            throw new MethodNotAllowedException();
+
         $this->uri = $uri;
         $this->setHeaders($headers);
         $this->protocol = $version;
         $this->parameters = $_GET;
 
-        if (!$this->hasHeader('Host')) {
+        if (!$this->hasHeader('Host'))
             $this->updateHostFromUri();
-        }
 
-        if ('' !== $body && null !== $body) {
+        if ('' !== $body && null !== $body)
             $this->stream = HttpStream::create($body);
-        }
+    }
+
+    private function csrfCheck(): bool
+    {
+        if ($this->method == 'GET')
+            return true;
+
+        $token = filter_input(INPUT_POST, 'csrf_token');
+        return  $token == $_SESSION['csrf_token'] && $token;
     }
 
 }

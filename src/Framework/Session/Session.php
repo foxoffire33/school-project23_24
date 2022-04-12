@@ -20,6 +20,7 @@ class Session
     ];
 
     public ?Users $user = null;
+    public ?string $csrf_token = null;
 
     public function __construct()
     {
@@ -30,6 +31,12 @@ class Session
             $user = new Users();
         }
         $this->user = $user;
+
+        if(empty($_SESSION['csrf_token']))
+            $_SESSION['csrf_token'] = md5(uniqid(mt_rand(), true));
+
+        $this->csrf_token = $_SESSION['csrf_token'];
+
     }
 
     public function set(string $key, $value)
