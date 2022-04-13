@@ -3,6 +3,7 @@
 namespace Framework\Validator;
 
 use Framework\DatabaseHandler\Entity;
+use Framework\Session\Session;
 use Framework\Validator\Interfaces\ValidatetorInterface;
 
 class Validator
@@ -11,6 +12,15 @@ class Validator
     public $valid = [], $messages = [];
     private Entity $entity;
     private array $validators;
+
+    public function __construct(private Session $session)
+    {
+    }
+
+    public function isWithoutErrors()
+    {
+        return empty($this->messages);
+    }
 
 
     private function resolveValidators(Entity $entity)
@@ -33,11 +43,16 @@ class Validator
             $this->resolveValidators($entity);
 
         foreach ($this->validators as $validator) {
-            if (!is_null($validator->attribute) && $validator->isValid()){
-                $this->valid[$validator->attribute] = $validator->entity->{$validator->attribute};
+            if (!is_null($validator->attribute)) {
+                $validator->validate();
+                if($validator->isValid())
+                    $this->valid[$validator->attribute] = $validator->entity->{$validator->attribute};
             }
             $this->messages = array_merge($validator->messages, $this->messages);
         }
+
+        //add messages to session
+        $_SESSION['flash']['error'] =  array_merge($_SESSION['flash']['error'], $this->messages);
     }
 
     public function validated($entity): array

@@ -16,7 +16,8 @@ class MysqlConnection extends MultiSingletonFactory
     }
 
 
-    private function restoreOnWakeUp(){
+    private function restoreOnWakeUp()
+    {
         $this->config = Config::getInstance();
 
         try {
@@ -52,7 +53,14 @@ class MysqlConnection extends MultiSingletonFactory
 
     public function query(string $query)
     {
-        return $this->db->prepare($query)->execute();
+        try {
+            return $this->db->prepare($query)->execute();
+        } catch (\PDOException $exception) {
+            if ($exception->getCode() < 42000)
+                throw new \Exception($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
+
+            $_SESSION['flash']['error'][] = $exception->getMessage();
+        }
     }
 
     public function __wakeup(): void

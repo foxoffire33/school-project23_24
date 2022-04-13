@@ -23,10 +23,13 @@ class NotEqualValidator extends BaseValidator implements ValidatetorInterface
         return !empty($this->hasMessages());
     }
 
-    function validate(): void
+    public function validate(): void
     {
-         if ($this->isValid() && !is_null($this->entity?->{$this->attribute}))
+         if ($this->isValid() && !is_null($this->entity?->{$this->attribute})){
              $this->valid[] = $this;
+         }else {
+             $this->messages[] = "$this->attribute is should not be Equal to $this->compareAttribute";
+         }
     }
 
     function validated(): array

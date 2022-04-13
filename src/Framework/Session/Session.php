@@ -4,15 +4,16 @@ namespace Framework\Session;
 
 use App\Models\Users;
 use Framework\AccessControl\Exceptions\UserNotFoundException;
+use Framework\core\Factories\SingletonFactory;
 use Framework\DatabaseHandler\exceptions\RecordNotFoundException;
 use http\Client\Curl\User;
 
-class Session
+class Session extends SingletonFactory
 {
 
     const SESSION_USER_ID_KEY = 'userID';
 
-    private $flashMessages = [
+    public static $flashMessages = [
         'information' => [],
         'success' => [],
         'warning' => [],
@@ -24,7 +25,7 @@ class Session
 
     public function __construct()
     {
-
+        $this->flashMessages = $_SESSION['flash'];
         $user = Users::findById($_SESSION[self::SESSION_USER_ID_KEY]);
         if (!$user)
             $user = new Users();
@@ -35,9 +36,7 @@ class Session
             $_SESSION['csrf_token'] = md5(uniqid(mt_rand(), true));
 
         $this->csrf_token = $_SESSION['csrf_token'];
-
     }
-
     public function set(string $key, $value)
     {
         $_SESSION[$key] = $value;

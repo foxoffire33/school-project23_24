@@ -57,7 +57,7 @@ class CoinController extends Controller
     #[HttpGet('/coins/:id/edit')]
     #[RoleBasedAccessMiddleware(self::class,'edit')]
     public function edit(int $id){
-        return $this->view->resolve('Coin/Edit', ['entity' => Coin::findById($id)]);
+        return $this->view->resolve('Coin/Edit', ['entity' => Coin::findByIdOrFail($id)]);
     }
 
     #[HttpGet('/coins/create')]
@@ -77,7 +77,7 @@ class CoinController extends Controller
     #[HttpPatch('/coins/:id')]
     #[RoleBasedAccessMiddleware(self::class,'update')]
     public function update(int $id){
-        $entity = Coin::findById($id);
+        $entity = Coin::findByIdOrFail($id);
         $entity->update($_POST);
         if($entity->save())
             header("Location: /coins");

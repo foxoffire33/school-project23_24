@@ -29,9 +29,9 @@ class AuthenticateController extends Controller
                 header("Location: /coins");
                 return;
             }
-            $_SESSION['flash']['error'][] = "Invalied cerdentials";
             header("Location: /login");
         }
+        $_SESSION['flash']['error'][] = "Invalid credentials.";
         header("Location: /login");
     }
 

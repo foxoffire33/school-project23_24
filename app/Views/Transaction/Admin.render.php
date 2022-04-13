@@ -2,7 +2,7 @@
 
     <body>
 <div class="flex h-screen">
-    <div class="w-full px-4 py-2 bg-gray-200 lg:w-full">
+    <div class="w-full px-4 py-2 shadow lg:w-full">
         <div class="container mx-auto mt-12">
             <div class="bg-white border-gray-200 px-2 sm:px-4 py-2.5 rounded dark:bg-gray-800">
                 <div class="container flex flex-wrap justify-between items-center mx-auto">

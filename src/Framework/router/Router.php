@@ -59,7 +59,7 @@ class Router implements RouterInterface
      * @param Container $container
      * @param MemCacheService $memCache
      */
-    public function __construct(private Container $container, private MemCacheService $memCache)
+    public function __construct(private Container $container, private MemCacheService $memCache, private string $test)
     {
         //is de cache leeg resolve dan alle routes en zet deze in de cache
 //        $this->memCache->FlushAll();

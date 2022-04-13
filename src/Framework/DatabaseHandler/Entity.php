@@ -12,6 +12,7 @@ abstract class Entity
 {
 
     private MysqlConnection $mysqlConnection;
+
     public function __construct()
     {
         $this->mysqlConnection = Application::getContainer()->get(MysqlConnection::class);
@@ -34,21 +35,28 @@ abstract class Entity
         $class = new \ReflectionClass(get_called_class());
         $entity = $class->newInstance();
 
-        foreach ($class->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
-            if (isset($array[$property->getName()])) {
-                $property->setValue($entity, $array[$property->getName()]);
+        try {
+
+            foreach ($class->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
+                if (isset($array[$property->getName()])) {
+                    $property->setValue($entity, $array[$property->getName()]);
+                }
             }
+        } catch (\TypeError $typeError) {
+            $_SESSION['flash']['error'][] = $typeError->getMessage();
+            $_SESSION['flash']['error'][] = "Invalid type assignment ";
         }
         return $entity;
     }
 
-    public function delete(){
+    public function delete()
+    {
         $class = new \ReflectionClass($this);
         $className = strtolower($class->getShortName());
 
         $sqlQuery = "delete from {$className} where id = :id";
         $statement = $this->mysqlConnection->db->prepare($sqlQuery);
-        $statement->bindParam("id",$this->id);
+        $statement->bindParam("id", $this->id);
         return $statement->execute();
     }
 
@@ -78,7 +86,7 @@ abstract class Entity
         $mysqlConnection = Application::getContainer()->get(MysqlConnection::class);
         $statement = $mysqlConnection->db->prepare($sqlQuery);
 
-        foreach ($propsToImplode as $key=>$value){
+        foreach ($propsToImplode as $key => $value) {
             $statement->bindParam($key, $this->{$key});
         }
 
@@ -105,44 +113,45 @@ abstract class Entity
         $statement->setFetchMode(PDO::FETCH_CLASS, $class->getName());
 
 
+        if ($statement->execute())
+            return $statement->fetch();
 
-        if ($statement->execute() ){
-            $result = $statement->fetch();
-            if($result)
-                return $result;
-
-       //     throw new RecordNotFoundException;
-        }
-
-
-
-
+        return null;
     }
 
-    private static function prepareStatement($options): \PDOStatement{
+    public static function findByIdOrFail($id)
+    {
+        $result = self::findById($id);
+        if ($result)
+            return $result;
+        throw new RecordNotFoundException;
+    }
+
+    private static function prepareStatement($options): \PDOStatement
+    {
         $class = new \ReflectionClass(get_called_class());
         $tableName = strtolower($class->getShortName());
         $mysqlConnection = Application::getContainer()->get(MysqlConnection::class);
         $propsToImplode = [];
 
 
-        foreach ($options as $key=>$value) {
-            if($value){
+        foreach ($options as $key => $value) {
+            if ($value) {
                 $propsToImplode[$key] = '`' . $key . '` = :' . $key . ' ';
-            }else{
-                $propsToImplode[$key] = ' `' . $key . '` '. ' IS NULL ';
+            } else {
+                $propsToImplode[$key] = ' `' . $key . '` ' . ' IS NULL ';
             }
         }
 
         $inploded = implode('and', $propsToImplode);
 
-        if(empty($inploded)) {
+        if (empty($inploded)) {
             $statement = $mysqlConnection->db->prepare("select * from {$tableName}");
-        }else{
+        } else {
             $statement = $mysqlConnection->db->prepare("select * from {$tableName} where {$inploded}");
-            foreach ($options as $key=>$value) {
-                if($value)
-                    $statement->bindParam($key,$value);
+            foreach ($options as $key => $value) {
+                if ($value)
+                    $statement->bindParam($key, $value);
             }
         }
 

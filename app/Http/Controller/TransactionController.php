@@ -37,8 +37,9 @@ class TransactionController extends Controller
 
         //todo uitzoeken wat hier mis gaat
         //$this->mysqlConnection->call('TradeCoin',$validated);
-        $rawQuery = $this->mysqlConnection->query('call TradeCoin(' .  implode(',',$validated) . ');');
-        if($rawQuery)
+        if($this->validator->isWithoutErrors())
+            $this->mysqlConnection->query('call TradeCoin(' .  implode(',',$validated) . ');');
+
             header("Location: /walled");
 
         return null;
@@ -56,9 +57,8 @@ class TransactionController extends Controller
     #[RoleBasedAccessMiddleware(self::class,'addPost')]
     public function addPost(): ?string {
         $model = Transaction::create(array_merge(['buy_coin' => 1],$_POST));
-        if(!empty($this->validator->validated($model)) && $model->save())
+        if($model->save())
             header("Location: /walled");
-
         return null;
     }
 }

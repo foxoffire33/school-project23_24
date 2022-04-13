@@ -21,14 +21,14 @@ class UsersController extends Controller
 
     #[HttpGet('/users/:id')]
     #[RoleBasedAccessMiddleware(self::class,'show')]
-    public function show(){
-        return "Home";
+    public function show(int $id){
+        return $this->view->resolve('User/Show', ['entity' => Users::findByIdOrFail($id)]);
     }
 
     #[HttpGet('/users/:id/edit')]
     #[RoleBasedAccessMiddleware(self::class,'edit')]
     public function edit(int $id){
-        return $this->view->resolve('User/Edit', ['entity' => Users::findById($id)]);
+        return $this->view->resolve('User/Edit', ['entity' => Users::findByIdOrFail($id)]);
     }
 
     #[HttpGet('/users/create')]
@@ -48,7 +48,7 @@ class UsersController extends Controller
     #[HttpPatch('/users/:id')]
     #[RoleBasedAccessMiddleware(self::class,'update')]
     public function update(int $id){
-        $entity = Users::findById($id);
+        $entity = Users::findByIdOrFail($id);
         $entity->update($_POST);
         if($entity->save())
             header("Location: /users");
@@ -63,7 +63,7 @@ class UsersController extends Controller
     #[HttpDelete('/users/:id')]
     #[RoleBasedAccessMiddleware(self::class,'delete')]
     public function delete(int $id){
-        $entity = Users::findById($id);
+        $entity = Users::findByIdOrFail($id);
         if($entity->delete())
              header('location: /users');
     }

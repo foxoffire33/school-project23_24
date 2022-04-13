@@ -11,6 +11,7 @@ use Framework\core\Factories\SingletonFactory;
 use Framework\core\Singleton;
 use Framework\DatabaseHandler\MysqlConnection;
 use Framework\Router\Attributes\HttpGet;
+use Framework\router\Router;
 use http\Exception;
 use MongoDB\BSON\Type;
 
@@ -34,7 +35,7 @@ class Container extends SingletonFactory implements ContainerInterface
     public function get(string $id)
     {
         if ($this->has($id)) {
-            $cache = $this->memCacheService->setKey(self::MEMCACHE_KEY, self::$entries);
+            $cache = $this->memCacheService->getByKey(self::MEMCACHE_KEY);
             if ($cache[$id])
                 self::$entries[$id] = $cache[$id];
 
@@ -78,14 +79,14 @@ class Container extends SingletonFactory implements ContainerInterface
 
         $reflectionClass = new \ReflectionClass($id);
         $constructor = $reflectionClass->getConstructor();
-        $parameters = array_merge($constructor?->getParameters() ?? []);
+        $parameters = $constructor?->getParameters() ?? [];
 
         //Controleer of het een defualt class is
         if ($reflectionClass->isInstantiable()) {
             if (!$constructor || !$parameters)
                 return new $id;
 
-            $dependencies = $this->loadDependencies($parameters, $id, $constructor);
+            $dependencies = $this->loadDependencies($parameters, $id, $reflectionClass);
             return $reflectionClass->newInstanceArgs($dependencies);
         }
 
@@ -95,6 +96,7 @@ class Container extends SingletonFactory implements ContainerInterface
         }
     }
 
+
     private function loadFactory(\ReflectionClass $reflectionClass, string $id)
     {
         $constructor = $reflectionClass->getConstructor();
@@ -103,14 +105,14 @@ class Container extends SingletonFactory implements ContainerInterface
         if (empty($parameters))
             return $id::getInstance();
 
-        $dependencies = $this->loadDependencies($parameters, $id, $constructor);
+        $dependencies = $this->loadDependencies($parameters, $id, $reflectionClass);
         return $id::getInstance($dependencies);
     }
 
-    private function loadDependencies(array $parameters, string $id, $constructor)
+    private function loadDependencies(array $parameters, string $id, $reflectionClass)
     {
         return array_map(
-            function (\ReflectionParameter $parameter) use ($id, $constructor) {
+            function (\ReflectionParameter $parameter) use ($id, $reflectionClass) {
                 $name = $parameter->getName();
 
 
@@ -125,12 +127,11 @@ class Container extends SingletonFactory implements ContainerInterface
                 if ($type instanceof \ReflectionNamedType && !$type->isBuiltin())
                     return $this->get($type->getName());
 
-//                if ($type instanceof \ReflectionNamedType && $type->isBuiltin()){
-//
-//                }
+                if ($type instanceof \ReflectionNamedType && $type->isBuiltin())
+                    return $parameter->getName();
 
 
-                throw new \Exception('Failed to resolve class "' . $id . '" because invalid param "' . $name . '"');
+                 throw new \Exception('Failed to resolve class "' . $id . '" because invalid param "' . $name . '"');
             },
             $parameters
         );
