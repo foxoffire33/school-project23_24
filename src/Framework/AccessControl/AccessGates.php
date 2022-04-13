@@ -21,4 +21,9 @@ class AccessGates
         if (!is_callable($execute) || !($execute($user, $entity)))
             throw new HttpUnauthorizedException();
     }
+
+    public function __sleep(): array
+    {
+        return [];
+    }
 }

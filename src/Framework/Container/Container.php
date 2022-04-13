@@ -7,15 +7,16 @@ use Framework\Container\Interfaces\ContainerInterface;
 use Framework\Core\Application;
 use Framework\core\Attribute;
 use Framework\core\Config;
+use Framework\core\Factories\SingletonFactory;
 use Framework\core\Singleton;
 use Framework\DatabaseHandler\MysqlConnection;
 use Framework\Router\Attributes\HttpGet;
 use http\Exception;
 use MongoDB\BSON\Type;
 
-class Container implements ContainerInterface
+class Container extends SingletonFactory implements ContainerInterface
 {
-    const MEMCACHE_KEY = 'container_cache';
+    const MEMCACHE_KEY = 'container';
     private static array $entries = [];
 
     private MemCacheService $memCacheService;
@@ -23,10 +24,6 @@ class Container implements ContainerInterface
     public function __construct()
     {
         $this->memCacheService = MemCacheService::getInstance();
-        $this->memCacheService->FlushAll();
-        $cache = $this->memCacheService->getByKey(self::MEMCACHE_KEY);
-        if($cache)
-            self::$entries = $cache;
     }
 
     /**
@@ -37,26 +34,37 @@ class Container implements ContainerInterface
     public function get(string $id)
     {
         if ($this->has($id)) {
+            $cache = $this->memCacheService->setKey(self::MEMCACHE_KEY, self::$entries);
+            if ($cache[$id])
+                self::$entries[$id] = $cache[$id];
+
             $entry = self::$entries[$id];
 
-            if (is_callable($entry)) {
+            if (is_callable($entry))
                 return $entry($this);
-            }
+
+            if (is_object($entry))
+                return $entry;
 
             $id = $entry;
         }
 
-        return $this->resolve($id);
+        $resolve = $this->resolve($id);
+        $this->set($id, $resolve);
+
+        return self::$entries[$id];
     }
 
     public function has(string $id): bool
     {
-        return isset(self::$entries[$id]);
+        $cache = $this->memCacheService->setKey(self::MEMCACHE_KEY, self::$entries);
+        return isset(self::$entries[$id]) || isset($cache[$id]);
     }
 
-    public function set(string $id, callable $concrete): void
+    public function set(string $id, callable|object $concrete): void
     {
         self::$entries[$id] = $concrete;
+        $this->memCacheService->setKey(self::MEMCACHE_KEY, self::$entries);
     }
 
     /**
@@ -85,8 +93,6 @@ class Container implements ContainerInterface
         if (!$reflectionClass->isInstantiable() && $reflectionClass->hasMethod('getInstance')) {
             return $this->loadFactory($reflectionClass, $id);
         }
-
-        $this->memCacheService->setKey(self::MEMCACHE_KEY, self::$entries);
     }
 
     private function loadFactory(\ReflectionClass $reflectionClass, string $id)
@@ -110,17 +116,19 @@ class Container implements ContainerInterface
 
                 $type = $parameter->getType();
                 if (!$type)
-                    //   throw new \Exception('Failed to resolve class "' . $id . '" because param "' . $name . '" is missing a type hint');
+                    throw new \Exception('Failed to resolve class "' . $id . '" because param "' . $name . '" is missing a type hint');
 
-                    if ($type instanceof \ReflectionUnionType)
-                        throw new \Exception('Failed to resolve class "' . $id . '" because of union type for param "' . $name . '"');
+                if ($type instanceof \ReflectionUnionType)
+                    throw new \Exception('Failed to resolve class "' . $id . '" because of union type for param "' . $name . '"');
 
 
                 if ($type instanceof \ReflectionNamedType && !$type->isBuiltin())
                     return $this->get($type->getName());
 
-//                if ($type instanceof \ReflectionNamedType && $type->isBuiltin())
-//                    return func_get_arg($parameter->getPosition());
+//                if ($type instanceof \ReflectionNamedType && $type->isBuiltin()){
+//
+//                }
+
 
                 throw new \Exception('Failed to resolve class "' . $id . '" because invalid param "' . $name . '"');
             },
@@ -128,23 +136,4 @@ class Container implements ContainerInterface
         );
     }
 
-//
-//
-//    private function trySingleton(string $id)
-//    {
-//        $reflectionClass = new \ReflectionClass($id);
-//        $method = $reflectionClass->getMethod('getInstance');
-//        if ($method->isStatic() && empty($reflectionClass->getProperties()))
-//            return static($reflectionClass->getName())::getInstance();
-//    }
-//
-//    private function tryDefaultClass(string $id)
-//    {
-//        $reflectionClass = new \ReflectionClass($id);
-//        $constructor = $reflectionClass->getConstructor();
-//        $parameters = array_merge($constructor?->getParameters() ?? [], $reflectionClass->getAttributes());
-//
-//        if (!$constructor || !$parameters)
-//            return new $id;
-//    }
 }

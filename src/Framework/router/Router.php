@@ -65,7 +65,7 @@ class Router implements RouterInterface
 //        $this->memCache->FlushAll();
         if (empty($this->memCache->getByKey(self::CACHED_ROUTE_KEY))) {
             $this->register($this->routerControllers);
-               $this->memCache->setKey(self::CACHED_ROUTE_KEY, self::$routes);
+            $this->memCache->setKey(self::CACHED_ROUTE_KEY, self::$routes);
         }
 
         //Haal alle routes op uit de cache
