@@ -29,12 +29,12 @@ $rootDiv->addLeave($form);
 <?php include $_SERVER['DOCUMENT_ROOT'] . '/../app/Views/Layouts/header.render.php' ?>
 <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/../app/Views/FlashMessages/FlasMessage.php' ?>
 <div class="container items-center bg-local"  style="background-image: url('https://source.unsplash.com/user/erondu'); background-repeat: no-repeat;background-attachment: fixed;background-position: center;background-size: 2000px auto;">
-    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
     <div class="flex items-center justify-center min-h-screen">
         <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/../app/Views/FlashMessages/FlasMessage.php' ?>
         <div class="px-8 py-6 mt-4 text-left bg-white shadow-lg">
             <h3 class="text-xl font-bold text-center px-12">Register new account</h3>
             <form action="/register" method="post">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                 <div class="mt-4">
                     <div>
                         <input type="text" placeholder="Email" name="email"
