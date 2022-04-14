@@ -84,4 +84,3 @@
         document.getElementById('model-delete-action').setAttribute('action', '/coins/' + itemID);
     }
 </script>
-<?php include $_SERVER['DOCUMENT_ROOT'] . '/../app/Views/Layouts/footer.render.php' ?>

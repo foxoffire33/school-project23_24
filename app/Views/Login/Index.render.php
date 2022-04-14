@@ -27,8 +27,10 @@
 <?//= $rootDiv->render() ?>
     <div class="flex items-center justify-center min-h-screen">
         <div class="px-8 py-6 mt-4 text-left bg-white shadow-lg">
+            <?php require_once $_SERVER['DOCUMENT_ROOT'] . '/../app/Views/FlashMessages/FlasMessage.php' ?>
             <h3 class="text-2xl font-bold text-center">Login to your account</h3>
             <form action="/login" method="post">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
                 <div class="mt-4">
                     <div>
                         <label class="block" for="email">Email<label>
