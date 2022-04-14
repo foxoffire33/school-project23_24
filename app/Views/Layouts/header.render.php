@@ -22,5 +22,5 @@ $head->addLeave(new \Framework\view\components\Headers\Title("My Home page"));
     </script>
 </head>
 <body>
+<?php include $_SERVER['DOCUMENT_ROOT'] . '/../app/Views/Layouts/navigation.render.php' ?>
 <div class="container mx-auto h-screen">
-    <?php include $_SERVER['DOCUMENT_ROOT'] . '/../app/Views/Layouts/navigation.render.php' ?>
