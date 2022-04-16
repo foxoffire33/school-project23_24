@@ -3,8 +3,6 @@
 namespace Framework\DatabaseHandler;
 
 use Framework\Core\Application;
-use Framework\core\Config;
-use Framework\DatabaseHandler\exceptions\RecordNotFound;
 use Framework\DatabaseHandler\exceptions\RecordNotFoundException;
 use PDO;
 

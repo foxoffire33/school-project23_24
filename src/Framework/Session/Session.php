@@ -25,7 +25,7 @@ class Session extends SingletonFactory
 
     public function __construct()
     {
-        $this->flashMessages = $_SESSION['flash'];
+        self::$flashMessages = $_SESSION['flash'];
         $user = Users::findById($_SESSION[self::SESSION_USER_ID_KEY]);
         if (!$user)
             $user = new Users();

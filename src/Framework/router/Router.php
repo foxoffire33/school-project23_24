@@ -59,7 +59,7 @@ class Router implements RouterInterface
      * @param Container $container
      * @param MemCacheService $memCache
      */
-    public function __construct(private Container $container, private MemCacheService $memCache, private string $test)
+    public function __construct(private Container $container, private MemCacheService $memCache)
     {
         //is de cache leeg resolve dan alle routes en zet deze in de cache
 //        $this->memCache->FlushAll();
@@ -69,7 +69,7 @@ class Router implements RouterInterface
         }
 
         //Haal alle routes op uit de cache
-          self::$routes = $this->memCache->getByKey(self::CACHED_ROUTE_KEY);
+        self::$routes = $this->memCache->getByKey(self::CACHED_ROUTE_KEY);
     }
 
 
@@ -80,7 +80,6 @@ class Router implements RouterInterface
         $httpUrl = $request->getUri();
 
         $path = explode('?', $httpUrl);
-
         $replacedPath = preg_replace('/(\d+)/', ':id', $path[0]);
         $route = self::$routes[$httpMethod][$replacedPath] ?? null;
         $routeMiddleware = self::$routesMiddleWare[$httpMethod][$replacedPath] ?? null;
@@ -118,7 +117,7 @@ class Router implements RouterInterface
 
     private function addAttributes($attributes, $method = null)
     {
-
+        $lastRoute = null;
         foreach ($attributes as $attribute) {
             $route = $attribute->newInstance();
             if ($route instanceof HttpRoute) {

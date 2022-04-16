@@ -13,7 +13,7 @@ class Validator
     private Entity $entity;
     private array $validators;
 
-    public function __construct(private Session $session)
+    public function __construct()
     {
     }
 
