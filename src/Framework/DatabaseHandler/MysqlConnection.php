@@ -11,7 +11,7 @@ class MysqlConnection extends MultiSingletonFactory
     public $db = null;
     private $config;
 
-    public function __construct()
+    private function __construct()
     {
         $this->restoreOnWakeUp();
     }
